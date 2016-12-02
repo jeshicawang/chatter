@@ -9,15 +9,15 @@ var users = [ { id: 0,
                 followers: [],
                 updatesCount: 5 },
               { id: 1,
-                username: 'biagi',
+                username: 'duval',
                 displayName: 'Rodolfo Biagi',
                 profilePic: 'images/biagi.jpg',
-                bio: 'An Argentine Tango musician who started his musical career by playing background music for silent movies, and this was where he was first discovered by a tango band leader.',
+                bio: 'An Argentine Tango musician who started his musical career by playing background music for silent movies.',
                 following: [],
                 followers: [],
                 updatesCount: 3 },
               { id: 2,
-                username: 'varela',
+                username: 'tentadora',
                 displayName: 'Hector Varela',
                 profilePic: 'images/varela.jpg',
                 bio: 'Varela was a musician criticized by the innovative players, but loved by the fans of dancing and popular tango.',
@@ -25,16 +25,48 @@ var users = [ { id: 0,
                 followers: [],
                 updatesCount: 2 },
               { id: 3,
-                username: 'donato',
+                username: 'gato',
                 displayName: 'Edgardo Donato',
                 profilePic: 'images/donato.jpg',
                 bio: 'Donato was a tango composer and orchestra leader, born in Buenos Aires, Argentina, raised from a young age and musically trained in Montevideo, Uruguay.',
                 following: [],
                 followers: [],
                 updatesCount: 0 },
+              { id: 4,
+                username: 'mano.a.mano',
+                displayName: 'Hugo Diaz',
+                profilePic: 'images/diaz.jpg',
+                bio: 'Víctor Hugo Díaz was a tango, folklore and jazz harmonicist.',
+                following: [],
+                followers: [],
+                updatesCount: 0 },
+              { id: 5,
+                username: 'muchacho',
+                displayName: 'Angel D\'Agostino',
+                profilePic: 'images/dagostino.jpg',
+                bio: 'I am milonguero, I always was, in the best sense of the word.',
+                following: [],
+                followers: [],
+                updatesCount: 0 },
+              { id: 6,
+                username: 'pensalo.bien',
+                displayName: 'Juan D\'Arienzo',
+                profilePic: 'images/darienzo.jpg',
+                bio: 'Juan D\'Arienzo was an Argentine tango musician, also known as \"El Rey del Compás\".',
+                following: [],
+                followers: [],
+                updatesCount: 0 },
+              { id: 7,
+                username: 'torrente',
+                displayName: 'Lucio Demare',
+                profilePic: 'images/demare.jpg',
+                bio: 'Lucio Demare was an Argentine composer who worked on a number of film scores.',
+                following: [],
+                followers: [],
+                updatesCount: 0 },
 ];
 
-var primaryUser = users[3];
+var primaryUser = users[0];
 var currentlyViewing = primaryUser;
 
 var updates = [ { userId: 0, timestamp: newMoment('5:00PM 11/22/16'), post: 'I\'m going home for the day!' },
@@ -293,15 +325,19 @@ function displaySuggestions() {
   rightContainer.appendChild(suggestions());
 }
 
+function displayUser(user) {
+  return createElement('div', { class: 'user' },
+            [createElement('div', { class: 'photo', style: 'background-image:url(\'' + user.profilePic + '\')' }, null),
+             createElement('h4', { class: 'name' }, user.displayName),
+             createElement('p', { class: 'username' }, '@' + user.username),
+             createElement('span', { class: 'plus lnr lnr-plus-circle' }, null)])
+}
+
 function suggestions() {
   var suggestions = createElement('div', { id: 'suggestions' }, [createElement('h3', {  }, 'Who to follow')]);
   users.forEach( function(user) {
     if (user === primaryUser) return;
-    suggestions.appendChild(createElement('div', { class: 'user' },
-                                [createElement('div', { class: 'photo', style: 'background-image:url(\'' + user.profilePic + '\')' }, null),
-                                 createElement('h4', { class: 'name' }, user.displayName),
-                                 createElement('p', { class: 'username' }, '@' + user.username),
-                                 createElement('span', { class: 'plus lnr lnr-plus-circle' }, null)]));
+    suggestions.appendChild(displayUser(user, 'user'));
     suggestions.lastChild.getElementsByClassName('name')[0].addEventListener('click', function() { switchUser(user) } , false);
     suggestions.lastChild.getElementsByClassName('username')[0].addEventListener('click', function() { switchUser(user) } , false);
     suggestions.lastChild.getElementsByClassName('lnr')[0].addEventListener('click', function() { follow(user.id) } , false);
@@ -352,6 +388,107 @@ function checkSearchInput() {
   document.getElementById('search-input').value = '';
 }
 
+var focusResult;
+var lastFocused = null;
+
+function displayResults() {
+  focusResult = -1;
+  var input = document.getElementById('search-input').value.toLowerCase();
+  var resultsContainer = document.getElementById('results');
+  while (resultsContainer.firstChild)
+    resultsContainer.removeChild(resultsContainer.firstChild);
+  document.getElementById('search-input').style.borderBottomLeftRadius = '15px';
+  document.getElementById('search-button').style.borderBottomRightRadius = '15px';
+  if (!input.trim()) {
+    resultsContainer.style.visibility = 'hidden';
+    return;
+  }
+  var results = getSearchResults(input)
+  if (!results.length) {
+    resultsContainer.style.visibility = 'hidden';
+    return;
+  }
+  document.getElementById('search-input').style.borderBottomLeftRadius = '0';
+  document.getElementById('search-button').style.borderBottomRightRadius = '0';
+  results.forEach( function(result, index) {
+    if(index === results.length - 1) {
+      result.style.borderBottomLeftRadius = '15px'
+      result.style.borderBottomRightRadius = '15px'
+    }
+    resultsContainer.appendChild(result);
+  });
+  resultsContainer.style.visibility = 'visible';
+}
+
+function hideResults(event) {
+  if (event.target === document.getElementById('results') || event.target === document.getElementById('search-input'))
+    return;
+  document.getElementById('results').style.visibility = 'hidden';
+  document.getElementById('search-input').style.borderBottomLeftRadius = '15px';
+  document.getElementById('search-button').style.borderBottomRightRadius = '15px';
+}
+
+function getSearchResults(key) {
+  var primaryUserAdded = false;
+  var results = [];
+  var regExp = new RegExp("\\b" + key);
+  users.forEach( function(user) {
+    var name = (user.displayName + ' ' + user.username).toLowerCase();
+    if (!regExp.test(name)) return;
+    if (primaryUser === user) {
+      results.unshift(addResult(user));
+      primaryUserAdded = true;
+      return;
+    }
+    if (primaryUserAdded && primaryUser.following.indexOf(user.id) > -1) {
+      results.splice(1, 0, addResult(user))
+      return;
+    }
+    if (primaryUser.following.indexOf(user.id) > -1) {
+      results.unshift(addResult(user));
+      return;
+    }
+    results.push(addResult(user));
+  });
+  return results;
+}
+
+function addResult(user) {
+  var result = createElement('div', { class: 'result' },
+                  [createElement('div', { class: 'photo', style: 'background-image:url(\'' + user.profilePic + '\')' }, null),
+                   createElement('h4', { class: 'name' }, user.displayName),
+                   createElement('p', { class: 'username' }, '@' + user.username)]);
+  result.addEventListener('click', function() { switchUser(user) }, false);
+  return result;
+}
+
+function keyboardNav(e) {
+  var results = document.getElementsByClassName('result');
+  switch (e.keyCode) {
+    case 13: //enter key
+      if (focusResult === -1) checkSearchInput();
+      else results[focusResult].click();
+      break;
+    case 40: //down arrow
+      lastFocused = results[focusResult];
+      if(focusResult === results.length - 1) focusResult = -1;
+      else focusResult++;
+      break;
+    case 38: //up arrow
+      lastFocused = results[focusResult];
+      if (focusResult === -1) focusResult = results.length - 1;
+      else focusResult--;
+      break;
+    default: //any other key
+      displayResults();
+  }
+  if (lastFocused)
+    lastFocused.style.backgroundColor = 'transparent';
+  if (results[focusResult]) {
+    results[focusResult].style.backgroundColor = '#f2f6f9';
+  }
+}
+
 displayProfile(primaryUser);
 displaySuggestions();
 
@@ -359,3 +496,6 @@ document.getElementById('home-button').addEventListener('click', goHome, false);
 document.getElementById('profile-button').addEventListener('click', function() { switchUser(primaryUser) }, false);
 document.getElementById('post-button').addEventListener('click', addUpdate, false);
 document.getElementById('search-button').addEventListener('click', checkSearchInput, false);
+document.getElementById('search-input').addEventListener('keyup', function(e) { keyboardNav(e) }, false);
+document.getElementById('search-input').addEventListener('focus', displayResults, false);
+document.getElementById('body').addEventListener('click', function(e) { hideResults(e) }, false);
