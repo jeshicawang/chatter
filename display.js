@@ -4,12 +4,12 @@ var users = [ { id: 0,
                 username: 'jwang',
                 displayName: 'Jessica Wang',
                 profilePic: 'images/jwang.jpg',
-                bio: 'Female. 20. Coffee lover. Argentine Tango Dancer. Future software developer;)',
-                following: [],
+                bio: 'Coffee lover. Dancer. Future software developer;)',
+                following: [3, 5],
                 followers: [1, 2, 3, 4, 5, 6, 7],
                 updatesCount: 5 },
               { id: 1,
-                username: 'duval',
+                username: 'biagi',
                 displayName: 'Rodolfo Biagi',
                 profilePic: 'images/biagi.jpg',
                 bio: 'An Argentine Tango musician who started his musical career by playing background music for silent movies.',
@@ -17,7 +17,7 @@ var users = [ { id: 0,
                 followers: [],
                 updatesCount: 3 },
               { id: 2,
-                username: 'tentadora',
+                username: 'varela',
                 displayName: 'Hector Varela',
                 profilePic: 'images/varela.jpg',
                 bio: 'Varela was a musician criticized by the innovative players, but loved by the fans of dancing and popular tango.',
@@ -25,15 +25,15 @@ var users = [ { id: 0,
                 followers: [],
                 updatesCount: 2 },
               { id: 3,
-                username: 'gato',
+                username: 'donato',
                 displayName: 'Edgardo Donato',
                 profilePic: 'images/donato.jpg',
                 bio: 'Donato was a tango composer and orchestra leader, born in Buenos Aires, Argentina, raised from a young age and musically trained in Montevideo, Uruguay.',
                 following: [0],
-                followers: [],
+                followers: [0],
                 updatesCount: 0 },
               { id: 4,
-                username: 'mano.a.mano',
+                username: 'diaz',
                 displayName: 'Hugo Diaz',
                 profilePic: 'images/diaz.jpg',
                 bio: 'Víctor Hugo Díaz was a tango, folklore and jazz harmonicist.',
@@ -41,15 +41,15 @@ var users = [ { id: 0,
                 followers: [],
                 updatesCount: 0 },
               { id: 5,
-                username: 'muchacho',
+                username: 'dagostino',
                 displayName: 'Angel D\'Agostino',
                 profilePic: 'images/dagostino.jpg',
                 bio: 'I am milonguero, I always was, in the best sense of the word.',
                 following: [0],
-                followers: [],
+                followers: [0],
                 updatesCount: 0 },
               { id: 6,
-                username: 'pensalo.bien',
+                username: 'darienzo',
                 displayName: 'Juan D\'Arienzo',
                 profilePic: 'images/darienzo.jpg',
                 bio: 'Juan D\'Arienzo was an Argentine tango musician, also known as \"El Rey del Compás\".',
@@ -57,7 +57,7 @@ var users = [ { id: 0,
                 followers: [],
                 updatesCount: 0 },
               { id: 7,
-                username: 'torrente',
+                username: 'demare',
                 displayName: 'Lucio Demare',
                 profilePic: 'images/demare.jpg',
                 bio: 'Lucio Demare was an Argentine composer who worked on a number of film scores.',
@@ -70,16 +70,36 @@ var primaryUser = users[0];
 var currentlyViewing = primaryUser;
 var viewing = null;
 
-var updates = [ { userId: 0, timestamp: newMoment('5:00PM 11/22/16'), post: 'I\'m going home for the day!' },
-                { userId: 0, timestamp: newMoment('4:30PM 11/22/16'), post: 'Class just ended.' },
-                { userId: 2, timestamp: newMoment('2:00PM 11/22/16'), post: 'No me hablas tesoro mio, No me hablas ni me has mirado, Fueron tres años mi vida, Tres años muy lejos de tu corazon.' },
-                { userId: 0, timestamp: newMoment('12:15PM 11/22/16'), post: '...and lunch is over, so back to class.' },
-                { userId: 1, timestamp: newMoment('12:00PM 11/22/16'), post: 'Todo es amor, la brisa y tú, jugando en el rumor, y el ruiseñor, cantando en una flor, buscando amor, amor.' },
-                { userId: 1, timestamp: newMoment('11:55AM 11/22/16'), post: 'La soledad, que me envuelve el corazón, va encendiendo en mi alma, el fuego de tu amor lejano. En las brumas de tu olvido, viaja mi ilusión, gritando tu nombre en vano.' },
-                { userId: 1, timestamp: newMoment('11:45AM 11/22/16'), post: 'Soñemos, que los dos estamos libres. Soñemos, en la gloria de este amor. Soñemos, que ya nada nos separa, y que somos cual dos almas, que nacieron para amar.' },
-                { userId: 0, timestamp: newMoment('11:30AM 11/22/16'), post: 'Off to my lunch break! Maybe I\'ll go across the street?' },
-                { userId: 0, timestamp: newMoment('9:00AM 11/22/16'), post: 'Starting my weekday by going to coding class!' },
-                { userId: 2, timestamp: newMoment('7:00AM 11/21/16'), post: 'Es la historia de un amor, como no hay otro igual. Que me hizo comprender, todo el bien todo el mal, que le dio luz a mi vida, apagandola después. ¡Ay, qué vida tan oscura, corazón, sin tu amor no viviré!' } ];
+var updates = { 0: { userId: 2, timestamp: newMoment('7:00AM 11/21/16'), post: 'Es la historia de un amor, como no hay otro igual. Que me hizo comprender, todo el bien todo el mal, que le dio luz a mi vida, apagandola después. ¡Ay, qué vida tan oscura, corazón, sin tu amor no viviré! #historiadeunamor #tango' },
+                1: { userId: 0, timestamp: newMoment('9:00AM 11/22/16'), post: 'Starting my weekday by going to coding class!' },
+                2: { userId: 0, timestamp: newMoment('11:30AM 11/22/16'), post: 'Off to my lunch break! Maybe I\'ll go across the street?' },
+                3: { userId: 1, timestamp: newMoment('11:45AM 11/22/16'), post: 'Soñemos, que los dos estamos libres. Soñemos, en la gloria de este amor. Soñemos, que ya nada nos separa, y que somos cual dos almas, que nacieron para amar. #sonemos #hugoduval #tango' },
+                4: { userId: 1, timestamp: newMoment('11:55AM 11/22/16'), post: 'La soledad, que me envuelve el corazón, va encendiendo en mi alma, el fuego de tu amor lejano. En las brumas de tu olvido, viaja mi ilusión, gritando tu nombre en vano. #caricias #hugoduval #tango' },
+                5: { userId: 1, timestamp: newMoment('12:00PM 11/22/16'), post: 'Todo es amor, la brisa y tú, jugando en el rumor, y el ruiseñor, cantando en una flor, buscando amor, amor. #todoesamor #hugoduval #tango' },
+                6: { userId: 0, timestamp: newMoment('12:15PM 11/22/16'), post: '...and lunch is over, so back to class.' },
+                7: { userId: 2, timestamp: newMoment('2:00PM 11/22/16'), post: 'No me hablas tesoro mio, No me hablas ni me has mirado, Fueron tres años mi vida, Tres años muy lejos de tu corazon. #fuerontresanos #tango' },
+                8: { userId: 0, timestamp: newMoment('4:30PM 11/22/16'), post: 'Class just ended.' },
+                9: { userId: 0, timestamp: newMoment('5:00PM 11/22/16'), post: 'I\'m going home for the day!' },
+                10: { userId: 3, timestamp: moment(), post: 'Sacále punta a esta milonga, que ya empezó. Seguí esos fueyes que rezongan, del corazón. Y las pebetas que han venido, del Club Fulgor. El tango requiebra la vida, Y en sus notas desparrama, su amor. #sacalepunta #milonga' },
+                11: { userId: 3, timestamp: moment(), post: '¡Carnaval de mi barrio!, donde todo es amor, cascabeles de risa, matizando el dolor, ¡carnaval de mi barrio!, pedacito de sol, con nostalgias de luna, y canción de farol. #carnavaldemibarrio #tango' },
+                12: { userId: 5, timestamp: moment(), post: 'Ahora no me conocés… ¡me borro tu ingratitud!… Aunque dejés mi alma trunca, no podrás olvidar nunca, lo de nuestra juventud… #ahoranomeconoces #angelvargas #tango' },
+                13: { userId: 5, timestamp: moment(), post:  'Mañanita arrabalera, Sin taitas por las veredas, Ni minas en el balcón, Tus faroles apagados. #adiosarrabal #angelvargas #tango'},
+                14: { userId: 1, timestamp: moment(), post: 'Ya sé que me has olvidado, ya sé que te fuiste lejos. Ya sé que con mis consejos, no te voy a enderezar. #campoafuera #milonga' } }
+
+var hashtags = { adiosarrabal: [13],
+                 ahoranomeconoces: [12],
+                 angelvargas: [12, 13],
+                 campoafuera: [14],
+                 caricias: [4],
+                 carnavaldemibarrio: [11],
+                 fuerontresanos: [7],
+                 historiadeunamor: [0],
+                 hugoduval: [3, 4, 5],
+                 milonga: [10, 14],
+                 sacalepunta: [10],
+                 sonemos: [3],
+                 tango: [0, 3, 4, 5, 7, 11, 12, 13],
+                 todoesamor: [5] };
 
 function newMoment(timestamp) {
   return moment(timestamp, 'h:mmA M/D/YY');
@@ -97,13 +117,19 @@ function createElement(tag, attributes, children) {
   }
   if (!(children instanceof Array))
     children = [children];
-  children.forEach(function(child) { newElement.appendChild(child) });
+  children.forEach( function(child) {
+    if (!(child instanceof Element)) {
+      newElement.appendChild(document.createTextNode(child));
+      return;
+    }
+      newElement.appendChild(child);
+  });
   return newElement;
 }
 
 function displayProfile(user) {
   if (!user) return;
-  remove(['user-info', 'stats', 'new-update', 'updates']);
+  remove(['user-info', 'hashtag', 'stats', 'new-update', 'updates']);
   currentlyViewing = user;
   document.getElementById('left').appendChild(userInfo(user));
   document.getElementById('center').appendChild(stats(user));
@@ -145,8 +171,19 @@ function remove(ids) {
   });
 }
 
+function empty(ids) {
+  if (! (ids instanceof Array))
+    ids = [ids];
+  ids.forEach(function (id) {
+    var element = document.getElementById(id);
+    if (!element) return;
+    while(element.firstChild)
+      element.removeChild(element.firstChild);
+  });
+}
+
 function goHome() {
-  remove(['user-info', 'stats', 'new-update', 'updates', 'list']);
+  remove(['user-info', 'hashtag', 'stats', 'new-update', 'updates', 'list']);
   currentlyViewing = null;
   var centerContainer = document.getElementById('center');
   centerContainer.appendChild(updatePoster());
@@ -155,10 +192,10 @@ function goHome() {
 
 function allUpdates() {
   var updatesToDisplay = [];
-  updates.forEach(function (update, index) {
-    if(primaryUser.following.includes(update.userId))
-      updatesToDisplay.push(createElement('div', { class: 'update' }, getUpdateElements(users[update.userId], index)));
-  });
+  for (var updateId in updates) {
+    if(primaryUser.following.includes(updates[updateId].userId))
+      updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(users[updates[updateId].userId], updateId)));
+  }
   if (updatesToDisplay.length)
     return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
   updatesToDisplay.push(createElement('div', { class: 'update' }, 'No updates to display. Follow other users to view their updates in your newsfeed.'));
@@ -286,7 +323,7 @@ function refreshStats() {
 }
 
 function displayCenterContent(event, user) {
-  remove(['new-update', 'updates', 'list'])
+  remove(['hashtag', 'new-update', 'updates', 'list'])
   var centerContainer = document.getElementById('center');
   if (viewing) document.getElementById(viewing).style.borderColor = null;
   event.target.style.borderColor = '#81a9ca';
@@ -320,24 +357,51 @@ function addUpdate() {
   var post = document.getElementById('post-input').value;
   document.getElementById('post-input').value = '';
   if (!post.trim()) return;
-  updates.unshift({ userId: primaryUser.id, timestamp: moment(), post: post });
+  var newUpdateId = Object.keys(updates).length;
+  updates[newUpdateId] = { userId: primaryUser.id, timestamp: moment(), post: post };
   primaryUser.updatesCount++;
+  addHashtags(post, newUpdateId);
   if (!currentlyViewing) {
-    updatesContainer.insertBefore(createElement('div', { class: 'update'}, getUpdateElements(primaryUser, 0)), updatesContainer.firstChild);
+    updatesContainer.insertBefore(createElement('div', { class: 'update'}, getUpdateElements(primaryUser, newUpdateId)), updatesContainer.firstChild);
     return;
   }
   refreshStats(primaryUser);
-  updatesContainer.insertBefore(createElement('div', { class: 'update'}, getUpdateElements(primaryUser, 0)), updatesContainer.firstChild);
+  updatesContainer.insertBefore(createElement('div', { class: 'update'}, getUpdateElements(primaryUser, newUpdateId)), updatesContainer.firstChild);
   if (primaryUser.updatesCount === 1)
     updatesContainer.removeChild(updatesContainer.lastChild);
 }
 
+function addHashtags(post, id) {
+  var newHashtags = false;
+  post = post.toLowerCase();
+  var validCharacters = /^[a-z0-9]*$/;
+  while (post.indexOf('#') > -1) {
+    post = post.substring(post.indexOf('#') + 1);
+    var pointer = 0;
+    while (pointer < post.length && validCharacters.test(post.charAt(pointer)))
+      pointer++;
+    var hashtag = post.substring(0, pointer);
+    if (!hashtag.length)
+      continue;
+    newHashtags = true;
+    if (hashtags[hashtag] && !hashtags[hashtag].includes(id))
+      hashtags[hashtag].push(id);
+    else if (!hashtags[hashtag])
+      hashtags[hashtag] = [id]
+    post = post.substring(pointer);
+  }
+  if (newHashtags) {
+    remove('trending');
+    document.getElementById('right').insertBefore(trending(), document.getElementById('suggestions'));
+  }
+}
+
 function userUpdates(user) {
   var updatesToDisplay = []
-  updates.forEach(function (update, index) {
-    if (update.userId === user.id)
-      updatesToDisplay.push(createElement('div', { class: 'update' }, getUpdateElements(user, index)));
-  });
+  for (var updateId in updates) {
+    if (updates[updateId].userId === user.id)
+      updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(user, updateId)));
+  }
   if (updatesToDisplay.length)
     return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
   if (currentlyViewing === primaryUser)
@@ -351,11 +415,36 @@ function getUpdateElements(user, index) {
   var updateElements = [createElement('div', { class: 'photo', style: 'background-image:url('+ user.profilePic + ')' }, null),
                         createElement('h4', { class: 'name' }, user.displayName),
                         createElement('p', { class: 'username' }, '@' + user.username),
-                        createElement('p', { class: 'timestamp' }, updates[index].timestamp.format('h:mmA M/D/YY')),
-                        createElement('p', { class: 'post' }, updates[index].post)];
+                        createElement('p', { class: 'timestamp' }, updates[index].timestamp.format('h:mmA M/D/YY'))];
+  updateElements.push(createElement('p', { class: 'post' }, translateHashtags(updates[index].post)));
   updateElements[1].addEventListener('click', function() { displayProfile(user) } , false);
   updateElements[2].addEventListener('click', function() { displayProfile(user) } , false);
   return updateElements;
+}
+
+function translateHashtags(post) {
+  var components = []
+  if (post.indexOf('#') === -1) {
+    components.push(post);
+    return components;
+  }
+  var validCharacters = /^[A-Za-z0-9]*$/;
+  while (post.indexOf('#') > -1) {
+    components.push(post.substring(0, post.indexOf('#')))
+    post = post.substring(post.indexOf('#') + 1);
+    var pointer = 0;
+    while (pointer < post.length && validCharacters.test(post.charAt(pointer)))
+      pointer++;
+    var hashtag = post.substring(0, pointer);
+    if (!hashtag.length) {
+      components.push('#');
+      continue;
+    }
+    components.push(createElement('a', { class: 'hashtag', href: '#' }, ['#', createElement('span', {  }, hashtag)]));
+    components[components.length-1].addEventListener('click', function(e) { viewHashtag(e.target.lastChild.textContent) }, false);
+    post = post.substring(pointer);
+  }
+  return components;
 }
 
 function listOfUsers(references) {
@@ -395,8 +484,39 @@ function listOfUsers(references) {
   return list;
 }
 
-function displaySuggestions() {
-  document.getElementById('right').appendChild(suggestions());
+function trending() { //top five hashtags: when there is a tie, newer hashtags take priority
+  var trending = createElement('div', { id: 'trending' }, createElement('h3', {  }, 'Trending'));
+  var sorted = [];
+  for (var hashtag in hashtags) {
+    if (!sorted.length) {
+      sorted.push(hashtag);
+      continue;
+    }
+    var pointer = 0;
+    while(hashtags[sorted[pointer]].length > hashtags[hashtag].length)
+      pointer++;
+    sorted.splice(pointer, 0, hashtag);
+  }
+  for (var i = 0; i < 5; i++) {
+    trending.appendChild(createElement('a', { class: 'hashtag', href: '#' }, ['#', createElement('span', {  }, sorted[i])]));
+    trending.lastChild.addEventListener('click', function(e) { viewHashtag(e.target.lastChild.textContent) }, false);
+  }
+  return trending;
+}
+
+function viewHashtag(hashtag) {
+  var centerContainer = document.getElementById('center');
+  empty(['center', 'left']);
+  centerContainer.appendChild(createElement('h2', { id: 'hashtag', class: 'shadow' }, '#' + hashtag));
+  centerContainer.appendChild(hashtagUpdates(hashtag));
+}
+
+function hashtagUpdates(hashtag) {
+  var updatesToDisplay = [];
+  hashtags[hashtag].forEach(function (updateId) {
+    updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(users[updates[updateId].userId], updateId)));
+  });
+  return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
 }
 
 function suggestions() {
@@ -515,7 +635,9 @@ function hideResults(event) {
 }
 
 displayProfile(primaryUser);
-displaySuggestions();
+var rightContainer = document.getElementById('right');
+rightContainer.appendChild(trending());
+rightContainer.appendChild(suggestions());
 
 document.getElementById('home-button').addEventListener('click', goHome, false);
 document.getElementById('profile-button').addEventListener('click', function() { displayProfile(primaryUser) }, false);
