@@ -1,5 +1,4 @@
 body {
-  min-width: 1024px;
   margin: 0;
   text-align: center;
   color: #353535;
@@ -86,15 +85,22 @@ h3 {
 p { margin: 0; }
 
 #header {
-  display: table;
   position: fixed;
   z-index: 99;
   top: 0;
   width: 100%;
-  min-width: 1024px;
   box-sizing: border-box;
   padding: 2px 20px;
   background-color: #fff;
+}
+
+#header-content {
+  position: relative;
+  display: table;
+  width: 100%;
+  min-width: 760px;
+  max-width: 1200px;
+  margin: auto;
 }
 
 .shadow { box-shadow: 0 0 2px #d6d6d6; }
@@ -209,7 +215,10 @@ p { margin: 0; }
 
 #content {
   display: table;
+  margin: auto;
   width: 100%;
+  min-width: 1024px;
+  max-width: 1500px;
   height: 100vh;
   padding-top: 46px;
   box-sizing: border-box;
