@@ -174,7 +174,7 @@ function createElement(tag, attributes, children) {
 
 function displayProfile(user) {
   if (!user) return;
-  remove(['user-info', 'interactions', 'hashtag', 'stats', 'new-update', 'updates']);
+  remove('empty', ['left', 'center'])
   currentlyViewing = user;
   left.appendChild(userInfo(user));
   left.appendChild(getInteractions(user, user.interactions, 0));
@@ -214,7 +214,7 @@ function follow(id) {
     document.getElementById(viewing).click();
   }
   if (currentlyViewing === primaryUser) {
-    remove('interactions');
+    remove('remove', 'interactions');
     left.appendChild(getInteractions(primaryUser, primaryUser.interactions, 0));
     return;
   }
@@ -222,29 +222,26 @@ function follow(id) {
   document.getElementById('follow').firstChild.data = following ? 'Follow' : 'Following';
 }
 
-function remove(ids) {
+function remove(action, ids) {
   if (! (ids instanceof Array))
     ids = [ids];
   ids.forEach(function (id) {
     var element = document.getElementById(id);
     if (!element) return;
-    element.parentElement.removeChild(element);
-  });
-}
-
-function empty(ids) {
-  if (! (ids instanceof Array))
-    ids = [ids];
-  ids.forEach(function (id) {
-    var element = document.getElementById(id);
-    if (!element) return;
-    while(element.firstChild)
-      element.removeChild(element.firstChild);
+    switch(action) {
+      case 'remove':
+        element.parentElement.removeChild(element);
+        break;
+      case 'empty':
+        while(element.firstChild)
+          element.removeChild(element.firstChild);
+        break;
+    }
   });
 }
 
 function goHome() {
-  remove(['user-info', 'interactions', 'hashtag', 'stats', 'new-update', 'updates', 'list']);
+  remove('empty', ['left', 'center']);
   currentlyViewing = null;
   left.appendChild(userInfo(primaryUser));
   left.appendChild(getInteractions(currentlyViewing, interactions, 0));
@@ -287,7 +284,7 @@ function userInfo(user) {
 }
 
 function editProfile() {
-  remove(['description', 'edit-profile']);
+  remove('remove', ['description', 'edit-profile']);
   var userInfo = document.getElementById('user-info');
   userInfo.appendChild(createElement('input', { id: 'image-upload', type: 'file' }, null));
   userInfo.lastChild.addEventListener('change', changeProfilePic, false);
@@ -424,7 +421,7 @@ function getInteractions(user, userInteractions, extra) {
 }
 
 function displayMoreInteractions() {
-  remove('interactions');
+  remove('remove', 'interactions');
   left.appendChild(getInteractions(currentlyViewing, currentlyViewing ? currentlyViewing.interactions : interactions, 5));
   interactionsDisplayed += 5;
 }
@@ -445,12 +442,12 @@ function stats(user) {
 }
 
 function refreshStats() {
-  remove('stats');
+  remove('remove', 'stats');
   center.insertBefore(stats(currentlyViewing), center.firstChild);
 }
 
 function displayCenterContent(event, user) {
-  remove(['hashtag', 'new-update', 'updates', 'list'])
+  remove('remove', ['hashtag', 'new-update', 'updates', 'list'])
   if (viewing) document.getElementById(viewing).style.borderColor = null;
   event.target.style.borderColor = '#81a9ca';
   switch (event.target) {
@@ -517,7 +514,7 @@ function addHashtags(post, id) {
     post = post.substring(pointer);
   }
   if (newHashtags) {
-    remove('trending');
+    remove('remove', 'trending');
     right.insertBefore(trending(), document.getElementById('suggestions'));
   }
 }
@@ -603,11 +600,11 @@ function likePost(updateElement, postId) {
     primaryUser.interactions.splice(primaryUser.interactions.indexOf(indexToRemove), 1);
   }
   if (!currentlyViewing) {
-    remove('interactions');
+    remove('remove', 'interactions');
     left.appendChild(getInteractions(currentlyViewing, interactions, 0));
   }
   if (currentlyViewing === primaryUser) {
-    remove('interactions');
+    remove('remove', 'interactions');
     left.appendChild(getInteractions(primaryUser, primaryUser.interactions, 0));
   }
   updateElement.parentElement.lastChild.textContent = updates[postId].likes.length;
@@ -671,7 +668,7 @@ function trending() { //top five hashtags: when there is a tie, newer hashtags t
 }
 
 function viewHashtag(hashtag) {
-  empty(['center', 'left']);
+  remove('empty', ['center', 'left']);
   currentlyViewing = null;
   center.appendChild(createElement('h2', { id: 'hashtag', class: 'shadow' }, '#' + hashtag));
   center.appendChild(hashtagUpdates(hashtag));
