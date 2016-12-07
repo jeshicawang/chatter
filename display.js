@@ -82,11 +82,6 @@ var users = [ { id: 0,
                 interactions: [14] }
 ];
 
-var primaryUser = users[0];
-var currentlyViewing = primaryUser;
-var viewing = null;
-var interactionsDisplayed = 10;
-
 var updates = { 0: { userId: 2, timestamp: newMoment('7:00AM 11/21/16'), post: 'Es la historia de un amor, como no hay otro igual. Que me hizo comprender, todo el bien todo el mal, que le dio luz a mi vida, apagandola después. ¡Ay, qué vida tan oscura, corazón, sin tu amor no viviré! #historiadeunamor #tango', likes: [] },
                 1: { userId: 0, timestamp: newMoment('9:00AM 11/22/16'), post: 'Starting my weekday by going to coding class!', likes: [4] },
                 2: { userId: 0, timestamp: newMoment('11:30AM 11/22/16'), post: 'Off to my lunch break! Maybe I\'ll go across the street?', likes: [4] },
@@ -137,6 +132,14 @@ var interactions = [ { userId: 0, activity: 'like', post: '6' },
                      { userId: 0, activity: 'follow', user: 5 },
                      { userId: 0, activity: 'follow', user: 1 } ];
 
+var primaryUser = users[0];
+var currentlyViewing = primaryUser;
+var viewing = null;
+var interactionsDisplayed = 10;
+var left = document.getElementById('left');
+var center = document.getElementById('center');
+var right = document.getElementById('right');
+
 function newMoment(timestamp) {
   return moment(timestamp, 'h:mmA M/D/YY');
 }
@@ -173,9 +176,9 @@ function displayProfile(user) {
   if (!user) return;
   remove(['user-info', 'interactions', 'hashtag', 'stats', 'new-update', 'updates']);
   currentlyViewing = user;
-  document.getElementById('left').appendChild(userInfo(user));
-  document.getElementById('left').appendChild(getInteractions(user, user.interactions, 0));
-  document.getElementById('center').appendChild(stats(user));
+  left.appendChild(userInfo(user));
+  left.appendChild(getInteractions(user, user.interactions, 0));
+  center.appendChild(stats(user));
   document.getElementById('posts').click();
 }
 
@@ -212,7 +215,7 @@ function follow(id) {
   }
   if (currentlyViewing === primaryUser) {
     remove('interactions');
-    document.getElementById('left').appendChild(getInteractions(primaryUser, primaryUser.interactions, 0));
+    left.appendChild(getInteractions(primaryUser, primaryUser.interactions, 0));
     return;
   }
   if (currentlyViewing !== users[id]) return;
@@ -243,10 +246,10 @@ function empty(ids) {
 function goHome() {
   remove(['user-info', 'interactions', 'hashtag', 'stats', 'new-update', 'updates', 'list']);
   currentlyViewing = null;
-  document.getElementById('left').appendChild(userInfo(primaryUser));
-  document.getElementById('left').appendChild(getInteractions(currentlyViewing, interactions, 0));
-  document.getElementById('center').appendChild(updatePoster());
-  document.getElementById('center').appendChild(allUpdates());
+  left.appendChild(userInfo(primaryUser));
+  left.appendChild(getInteractions(currentlyViewing, interactions, 0));
+  center.appendChild(updatePoster());
+  center.appendChild(allUpdates());
 }
 
 function allUpdates() {
@@ -422,7 +425,7 @@ function getInteractions(user, userInteractions, extra) {
 
 function displayMoreInteractions() {
   remove('interactions');
-  document.getElementById('left').appendChild(getInteractions(currentlyViewing, currentlyViewing ? currentlyViewing.interactions : interactions, 5));
+  left.appendChild(getInteractions(currentlyViewing, currentlyViewing ? currentlyViewing.interactions : interactions, 5));
   interactionsDisplayed += 5;
 }
 
@@ -443,29 +446,27 @@ function stats(user) {
 
 function refreshStats() {
   remove('stats');
-  var centerContainer = document.getElementById('center');
-  centerContainer.insertBefore(stats(currentlyViewing), centerContainer.firstChild);
+  center.insertBefore(stats(currentlyViewing), center.firstChild);
 }
 
 function displayCenterContent(event, user) {
   remove(['hashtag', 'new-update', 'updates', 'list'])
-  var centerContainer = document.getElementById('center');
   if (viewing) document.getElementById(viewing).style.borderColor = null;
   event.target.style.borderColor = '#81a9ca';
   switch (event.target) {
     case document.getElementById('posts'):
       viewing = 'posts';
       if (user === primaryUser)
-        centerContainer.appendChild(updatePoster())
-      centerContainer.appendChild(userUpdates(user));
+        center.appendChild(updatePoster())
+      center.appendChild(userUpdates(user));
       break;
     case document.getElementById('following'):
       viewing = 'following';
-      centerContainer.appendChild(listOfUsers(user.following));
+      center.appendChild(listOfUsers(user.following));
       break;
     case document.getElementById('followers'):
       viewing = 'followers';
-      centerContainer.appendChild(listOfUsers(user.followers));
+      center.appendChild(listOfUsers(user.followers));
       break;
   }
 }
@@ -517,7 +518,7 @@ function addHashtags(post, id) {
   }
   if (newHashtags) {
     remove('trending');
-    document.getElementById('right').insertBefore(trending(), document.getElementById('suggestions'));
+    right.insertBefore(trending(), document.getElementById('suggestions'));
   }
 }
 
@@ -603,11 +604,11 @@ function likePost(updateElement, postId) {
   }
   if (!currentlyViewing) {
     remove('interactions');
-    document.getElementById('left').appendChild(getInteractions(currentlyViewing, interactions, 0));
+    left.appendChild(getInteractions(currentlyViewing, interactions, 0));
   }
   if (currentlyViewing === primaryUser) {
     remove('interactions');
-    document.getElementById('left').appendChild(getInteractions(primaryUser, primaryUser.interactions, 0));
+    left.appendChild(getInteractions(primaryUser, primaryUser.interactions, 0));
   }
   updateElement.parentElement.lastChild.textContent = updates[postId].likes.length;
 }
@@ -670,8 +671,6 @@ function trending() { //top five hashtags: when there is a tie, newer hashtags t
 }
 
 function viewHashtag(hashtag) {
-  var center = document.getElementById('center');
-  var left = document.getElementById('left');
   empty(['center', 'left']);
   currentlyViewing = null;
   center.appendChild(createElement('h2', { id: 'hashtag', class: 'shadow' }, '#' + hashtag));
@@ -805,8 +804,8 @@ function hideResults(event) {
 }
 
 goHome();
-document.getElementById('right').appendChild(trending());
-document.getElementById('right').appendChild(suggestions());
+right.appendChild(trending());
+right.appendChild(suggestions());
 
 document.getElementById('home-button').addEventListener('click', goHome, false);
 document.getElementById('profile-button').addEventListener('click', function() { displayProfile(primaryUser) }, false);
