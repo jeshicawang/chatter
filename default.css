@@ -398,10 +398,9 @@ label span {
 
 #left .hashtag,
 #left .hashtag:visited,
-#left span:hover,
-#interactions .more:hover { color: #fff; }
+#left span:hover { color: #fff; }
 
-#interactions .no-more:hover { color: #a5c2d9; }
+#interactions .more:hover { color: #d9e5ef; }
 
 #stats {
   display: table;

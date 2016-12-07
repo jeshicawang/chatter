@@ -414,13 +414,19 @@ function getInteractions(user, userInteractions, extra) {
     }
     if (!user) interaction = '';
   });
-  container.appendChild(createElement('a', { class: 'more', href: '#' }, (itemsAdded < interactionsArray.length) ? '• • • more • • •' : '• • •'));
-  if (container.lastChild.textContent === '• • •') {
-    container.lastChild.className = 'more no-more';
+  container.appendChild(createElement('a', { class: 'more', href: '#' }, (itemsAdded < interactionsArray.length) ? '• • • show more • • •' : '• • • show less • • •'));
+  if (container.lastChild.textContent === '• • • show less • • •') {
+    container.lastChild.addEventListener('click', minimizeInteractions, false);
     return container;
   }
   container.lastChild.addEventListener('click', displayMoreInteractions, false);
   return container;
+}
+
+function minimizeInteractions() {
+  remove('remove', 'interactions');
+  interactionsDisplayed = 10;
+  left.appendChild(getInteractions(currentlyViewing, currentlyViewing ? currentlyViewing.interactions : interactions, 0));
 }
 
 function displayMoreInteractions() {
