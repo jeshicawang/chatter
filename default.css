@@ -25,9 +25,7 @@ button:hover {
   border-color: #6d94b6;
 }
 
-button:focus {
-  outline: none;
-}
+button:focus { outline: none; }
 
 textarea,
 input {
@@ -85,9 +83,7 @@ h3 {
   border-color: #93b5d2;
 }
 
-p {
-  margin: 0;
-}
+p { margin: 0; }
 
 #header {
   display: table;
@@ -101,9 +97,7 @@ p {
   background-color: #fff;
 }
 
-.shadow {
-  box-shadow: 0 0 2px #d6d6d6;
-}
+.shadow { box-shadow: 0 0 2px #d6d6d6; }
 
 #left-nav,
 #right-nav {
@@ -113,9 +107,7 @@ p {
   width: 40%;
 }
 
-#right-nav {
-  text-align: center;
-}
+#right-nav { text-align: center; }
 
 .navigation {
   display: table;
@@ -170,9 +162,7 @@ p {
   border-color: transparent transparent #b2b2b2;
 }
 
-.tooltip:hover .tooltip-text {
-  visibility: visible;
-}
+.tooltip:hover .tooltip-text { visibility: visible; }
 
 #search {
   float: left;
@@ -238,9 +228,7 @@ p {
   color: #fff;
 }
 
-#right {
-  width: 22%;
-}
+#right { width: 22%; }
 
 #center {
   width: 56%;
@@ -255,17 +243,11 @@ p {
   background-position: center;
 }
 
-.photo {
-  border-radius: 50%;
-}
+.photo { border-radius: 50%; }
 
-#user-info #username {
-  margin-bottom: 15px;
-}
+#user-info #username { margin-bottom: 15px; }
 
-#user-info #about-me {
-  margin-bottom: 15px;
-}
+#user-info #about-me { margin-bottom: 15px; }
 
 #user-info #follow,
 #user-info #edit-profile,
@@ -311,9 +293,7 @@ label {
   padding-bottom: 43px;
 }
 
-label:hover {
-  background-color: rgba(0,0,0,.5);
-}
+label:hover { background-color: rgba(0,0,0,.5); }
 
 label span {
   margin: auto;
@@ -338,34 +318,22 @@ label span {
 }
 
 #editor #check,
-#editor #cross {
-  visibility: hidden;
-}
+#editor #cross { visibility: hidden; }
 
-#editor .lnr-checkmark-circle {
-  color: green;
-}
+#editor .lnr-checkmark-circle { color: green; }
 
-#editor .lnr-cross-circle {
-  color: red;
-}
+#editor .lnr-cross-circle { color: red; }
 
-#bio .lnr {
-  transform: translateY(-30px);
-}
+#bio .lnr { transform: translateY(-30px); }
 
-#bio.field {
-  height: 90px;
-}
+#bio.field { height: 90px; }
 
 #user-info #error-msg {
   height: 16px;
   margin-bottom: 20px;
 }
 
-.field div {
-  background-color: #fff;
-}
+.field div { background-color: #fff; }
 
 #editor textarea {
   float: right;
@@ -390,9 +358,7 @@ label span {
   overflow: hidden;
 }
 
-#bio textarea {
-  border-bottom: 0;
-}
+#bio textarea { border-bottom: 0; }
 
 #interactions {
   margin-top: 60px;
@@ -433,13 +399,9 @@ label span {
 #left .hashtag,
 #left .hashtag:visited,
 #left span:hover,
-#interactions .more:hover {
-  color: #fff;
-}
+#interactions .more:hover { color: #fff; }
 
-#interactions .no-more:hover {
-  color: #a5c2d9;
-}
+#interactions .no-more:hover { color: #a5c2d9; }
 
 #stats {
   display: table;
@@ -455,9 +417,7 @@ label span {
   border-bottom: 4px solid #fff;
 }
 
-#stats .stat:hover {
-  border-color: #e5edf4;
-}
+#stats .stat:hover { border-color: #e5edf4; }
 
 #stats .label {
   color: #b2b2b2;
@@ -485,9 +445,7 @@ label span {
   border-color: #fff;
 }
 
-#post-input:focus {
-  border-color: #f1f1f1;
-}
+#post-input:focus { border-color: #f1f1f1; }
 
 #post-button {
   width: 50px;
@@ -619,51 +577,33 @@ label span {
   border: 1px solid #f1f1f1;
 }
 
-#list .user:hover {
-  background-color: #f1f1f1;
-}
+#list .user:hover { background-color: #f1f1f1; }
 
 #list div,
 #list h4,
-#list p {
-  pointer-events: none;
-}
+#list p { pointer-events: none; }
 
-.user .stat {
-  color: #81a9ca;
-}
+.user .stat { color: #81a9ca; }
 
 #trending {
   text-align: left;
   margin-bottom: 20px;
 }
 
-#trending h3 {
-  margin-bottom: 10px;
-}
+#trending h3 { margin-bottom: 10px; }
 
-#trending .hashtag {
-  display: block;
-}
+#trending .hashtag { display: block; }
 
-.hashtag {
-  text-decoration: none;
-}
+.hashtag { text-decoration: none; }
 
 #center .hashtag,
-#right .hashtag {
-  color: #81a9ca;
-}
+#right .hashtag { color: #81a9ca; }
 
 .hashtag span:hover,
-.hashtag span:focus {
-  text-decoration: underline;
-}
+.hashtag span:focus { text-decoration: underline; }
 
 #center .hashtag:visited,
-#right .hashtag:visited {
-  color: #81a9ca;
-}
+#right .hashtag:visited { color: #81a9ca; }
 
 #suggestions .user,
 #search .result {
@@ -679,9 +619,7 @@ label span {
 }
 
 #search .result:hover,
-#search .result:focus {
-  background-color: #f2f6f9;
-}
+#search .result:focus { background-color: #f2f6f9; }
 
 .user .photo,
 .result .photo {
@@ -744,9 +682,7 @@ label span {
 #suggestions .name:hover,
 #suggestions .username:hover,
 #updates .name:hover,
-#updates .username:hover {
-  color: #81a9ca;
-}
+#updates .username:hover { color: #81a9ca; }
 
 button,
 label,
@@ -756,6 +692,4 @@ label,
 #content .username,
 .user .lnr-checkmark-circle,
 .user .lnr-plus-circle,
-#stats .stat {
-  cursor: pointer;
-}
+#stats .stat { cursor: pointer; }
