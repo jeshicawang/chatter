@@ -380,11 +380,15 @@ function getInteractions(user, userInteractions, extra) {
     interactionsArray = userInteractions.slice();
   var container = createElement('div', { id: 'interactions' }, createElement('h3', {  }, 'Interactions'));
   var itemsAdded = 0;
+  var itemsSkipped = 0;
   interactionsArray.reverse().forEach( function(item) {
-    if(itemsAdded >= (interactionsDisplayed + extra))
+    if (itemsAdded >= (interactionsDisplayed + extra))
       return;
+    if (!item) {
+      itemsSkipped++;
+      return;
+    }
     itemsAdded++;
-    if(!item) return;
     if (!user)
       if (users[item.userId] === primaryUser)
         interaction += 'you ';
@@ -414,8 +418,8 @@ function getInteractions(user, userInteractions, extra) {
     }
     if (!user) interaction = '';
   });
-  container.appendChild(createElement('a', { class: 'more', href: '#' }, (itemsAdded < interactionsArray.length) ? '• • • show more • • •' : '• • • show less • • •'));
-  if (container.lastChild.textContent === '• • • show less • • •') {
+  container.appendChild(createElement('a', { class: 'more', href: '#' }, (itemsAdded + itemsSkipped < interactionsArray.length) ? '• • • show more • • •' : '• • •'));
+  if (container.lastChild.textContent === '• • •') {
     container.lastChild.addEventListener('click', minimizeInteractions, false);
     return container;
   }
