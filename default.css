@@ -234,7 +234,7 @@ p { margin: 0; }
 #left {
   width: 22%;
   background-color: #81a9ca;
-  color: #fff;
+  color: #d9e5ef;
 }
 
 #right { width: 22%; }
@@ -253,6 +253,8 @@ p { margin: 0; }
 }
 
 .photo { border-radius: 50%; }
+
+#user-info #name { color: #fff; }
 
 #user-info #username { margin-bottom: 15px; }
 
@@ -378,7 +380,6 @@ label span {
   position: relative;
   line-height: 22px;
   margin-left: 25px;
-  color: #d9e5ef;
 }
 
 .interaction .lnr {
@@ -696,6 +697,8 @@ label span {
 
 button,
 label,
+.photo,
+#name,
 #list .user,
 .result,
 #content .name,

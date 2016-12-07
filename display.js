@@ -272,6 +272,8 @@ function userInfo(user) {
                          createElement('p', { id: 'about-me' }, user.bio)])]);
   var profilePic = userInfo.firstChild;
   profilePic.style.backgroundImage = 'url(' + user.profilePic + ')';
+  profilePic.addEventListener('click', function() { displayProfile(user )}, false);
+  userInfo.lastChild.firstChild.addEventListener('click', function() { displayProfile(user )}, false);
   if (!currentlyViewing) {
     return userInfo;
   }
@@ -556,6 +558,7 @@ function getUpdateElements(user, index) {
                         createElement('p', { class: 'post' }, addLinks(updates[index].post)),
                         createElement('button', { class: liked ? 'liked' : 'like' }, createElement('span', { class: 'lnr lnr-heart' }, null)),
                         createElement('span', { class: 'like-count' }, updates[index].likes.length)];
+  updateElements[0].addEventListener('click', function() { displayProfile(user) } , false);
   updateElements[1].addEventListener('click', function() { displayProfile(user) } , false);
   updateElements[2].addEventListener('click', function() { displayProfile(user) } , false);
   updateElements[5].addEventListener('click', function(e) { likePost(e.target, index) } , false);
@@ -707,6 +710,7 @@ function suggestions() {
                                 createElement('h4', { class: 'name' }, user.displayName),
                                 createElement('p', { class: 'username' }, '@' + user.username),
                                 createElement('span', { class: 'plus lnr ' + icon }, null)]));
+    suggestions.lastChild.getElementsByClassName('photo')[0].addEventListener('click', function() { displayProfile(user) } , false);                            
     suggestions.lastChild.getElementsByClassName('name')[0].addEventListener('click', function() { displayProfile(user) } , false);
     suggestions.lastChild.getElementsByClassName('username')[0].addEventListener('click', function() { displayProfile(user) } , false);
     suggestions.lastChild.getElementsByClassName('lnr')[0].addEventListener('click', function() { follow(user.id) } , false);
