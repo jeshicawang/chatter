@@ -379,17 +379,12 @@ function getInteractions(user, userInteractions, extra) {
       interactionsArray.push(interactions[index]);
     });
   } else
-    interactionsArray = userInteractions.slice();
+    interactionsArray = userInteractions.slice().filter(function(item) { return item && (item.userId === primaryUser.id || primaryUser.following.indexOf(item.userId) > -1) });
   var container = createElement('div', { id: 'interactions' }, createElement('h3', {  }, 'Interactions'));
   var itemsAdded = 0;
-  var itemsSkipped = 0;
   interactionsArray.reverse().forEach( function(item) {
     if (itemsAdded >= (interactionsDisplayed + extra))
       return;
-    if (!item) {
-      itemsSkipped++;
-      return;
-    }
     itemsAdded++;
     if (!user)
       if (users[item.userId] === primaryUser)
@@ -420,7 +415,7 @@ function getInteractions(user, userInteractions, extra) {
     }
     if (!user) interaction = '';
   });
-  container.appendChild(createElement('a', { class: 'more', href: '#' }, (itemsAdded + itemsSkipped < interactionsArray.length) ? '• • • show more • • •' : '• • •'));
+  container.appendChild(createElement('a', { class: 'more', href: '#' }, (itemsAdded < interactionsArray.length) ? '• • • show more • • •' : '• • •'));
   if (container.lastChild.textContent === '• • •') {
     container.lastChild.addEventListener('click', minimizeInteractions, false);
     return container;
@@ -710,7 +705,7 @@ function suggestions() {
                                 createElement('h4', { class: 'name' }, user.displayName),
                                 createElement('p', { class: 'username' }, '@' + user.username),
                                 createElement('span', { class: 'plus lnr ' + icon }, null)]));
-    suggestions.lastChild.getElementsByClassName('photo')[0].addEventListener('click', function() { displayProfile(user) } , false);                            
+    suggestions.lastChild.getElementsByClassName('photo')[0].addEventListener('click', function() { displayProfile(user) } , false);
     suggestions.lastChild.getElementsByClassName('name')[0].addEventListener('click', function() { displayProfile(user) } , false);
     suggestions.lastChild.getElementsByClassName('username')[0].addEventListener('click', function() { displayProfile(user) } , false);
     suggestions.lastChild.getElementsByClassName('lnr')[0].addEventListener('click', function() { follow(user.id) } , false);
