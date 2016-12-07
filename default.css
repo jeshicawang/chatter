@@ -402,6 +402,8 @@ label span {
 
 #interactions .more:hover { color: #d9e5ef; }
 
+#interactions .all:hover { color: #a5c2d9; }
+
 #stats {
   display: table;
   width: 100%;
