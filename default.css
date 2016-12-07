@@ -28,7 +28,7 @@ button:hover {
 button:focus { outline: none; }
 
 textarea,
-input {
+input[type="text"] {
   resize: none;
   box-sizing: border-box;
   border: 1px solid #f1f1f1;
@@ -39,7 +39,7 @@ input {
 }
 
 textarea:focus,
-input:focus {
+input[type="text"]:focus {
   outline: none;
 }
 
