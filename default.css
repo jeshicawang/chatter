@@ -408,7 +408,7 @@ label span {
 
 #left .hashtag,
 #left .hashtag:visited,
-#left span:hover { color: #fff; }
+#interactions span:hover { color: #fff; }
 
 #interactions .more:hover { color: #d9e5ef; }
 
@@ -695,10 +695,11 @@ label span {
 #updates .name:hover,
 #updates .username:hover { color: #81a9ca; }
 
+a,
 button,
 label,
 .photo,
-#name,
+#description #name,
 #list .user,
 .result,
 #content .name,

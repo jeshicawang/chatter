@@ -152,7 +152,7 @@ function createElement(tag, attributes, children, eventListener) {
     newElement.setAttribute(key, attributes[key]);
   }
   if(eventListener)
-    newElement.addEventListener(eventListener[0], eventListener[1], eventListener[2]);
+    newElement.addEventListener(eventListener[0], eventListener[1]);
   if (!children && children !== 0) return newElement;
   if (!(children instanceof Element) && !(children instanceof Array)) {
     newElement.appendChild(document.createTextNode(children));
@@ -160,7 +160,7 @@ function createElement(tag, attributes, children, eventListener) {
   }
   if (!(children instanceof Array))
     children = [children];
-  var appendChildren = function(c) {
+  function appendChildren(c) {
     c.forEach( function(child) {
       if (!(child instanceof Element) && !(child instanceof Array)) {
         newElement.appendChild(document.createTextNode(child));
@@ -266,7 +266,7 @@ function allUpdates() {
 }
 
 function userInfo(user) {
-  var eventListener = ['click', function() { displayProfile(user) }, false];
+  var eventListener = ['click', function() { displayProfile(user) }];
   var userInfo = createElement('div', { id: 'user-info' },
                     [createElement('div', { class: 'photo' }, null, eventListener),
                      createElement('div', { id: 'description' },
@@ -279,21 +279,21 @@ function userInfo(user) {
     return userInfo;
   }
   if (user === primaryUser) {
-    userInfo.appendChild(createElement('button', { id: 'edit-profile' }, 'Edit Profile', ['click', function() { editProfile() }, false]));
+    userInfo.appendChild(createElement('button', { id: 'edit-profile' }, 'Edit Profile', ['click', function() { editProfile() }]));
     return userInfo;
   }
-  userInfo.appendChild(createElement('button', { id: 'follow' }, primaryUser.following.includes(user.id) ? 'Following' : 'Follow', ['click', function() { follow(user.id) }, false]));
+  userInfo.appendChild(createElement('button', { id: 'follow' }, primaryUser.following.includes(user.id) ? 'Following' : 'Follow', ['click', function() { follow(user.id) }]));
   return userInfo;
 }
 
 function editProfile() {
   remove('remove', ['description', 'edit-profile']);
   var userInfo = document.getElementById('user-info');
-  userInfo.appendChild(createElement('input', { id: 'image-upload', type: 'file' }, null, ['change', changeProfilePic, false]));
-  userInfo.appendChild(createElement('label', { for: 'image-upload' }, createElement('span', { class: 'lnr lnr-camera' }, null)));
+  userInfo.appendChild(createElement('input', { id: 'image-upload', type: 'file' }, null, ['change', changeProfilePic]));
+  userInfo.appendChild(createElement('label', { for: 'image-upload' }, createElement('span', { class: 'lnr lnr-camera' })));
   userInfo.appendChild(editor(primaryUser));
   userInfo.appendChild(createElement('p', { id: "error-msg" }, ' '));
-  userInfo.appendChild(createElement('button', { id: 'save' }, 'Save', ['click', saveProfile, false]));
+  userInfo.appendChild(createElement('button', { id: 'save' }, 'Save', ['click', saveProfile]));
 }
 
 function changeProfilePic() {
@@ -308,15 +308,15 @@ function changeProfilePic() {
 function editor(user) {
   return createElement('div', { id: 'editor', class: 'shadow' },
             [createElement('div', { id: 'name', class: 'field' },
-                [createElement('div', {  }, createElement('span', { class: 'lnr lnr-laptop' }, null)),
+                [createElement('div', {  }, createElement('span', { class: 'lnr lnr-laptop' })),
                  createElement('textarea', { id: 'name-text', placeholder: 'Name', maxlength: '24' }, user.displayName)]),
              createElement('div', { id: 'username', class: 'field' },
-                [createElement('div', {  }, createElement('span', { class: 'lnr lnr-user' }, null)),
-                 createElement('textarea', { id: 'username-text', placeholder: 'Username', maxlength: '24' }, user.username, ['keyup', function() { checkUsername(this.value) }, false]),
-                 createElement('div', { id: 'check' }, createElement('span', { class: 'lnr lnr-checkmark-circle' }, null)),
-                 createElement('div', { id: 'cross' }, createElement('span', { class: 'lnr lnr-cross-circle' }, null))]),
+                [createElement('div', {  }, createElement('span', { class: 'lnr lnr-user' })),
+                 createElement('textarea', { id: 'username-text', placeholder: 'Username', maxlength: '24' }, user.username, ['keyup', function() { checkUsername(this.value) }]),
+                 createElement('div', { id: 'check' }, createElement('span', { class: 'lnr lnr-checkmark-circle' })),
+                 createElement('div', { id: 'cross' }, createElement('span', { class: 'lnr lnr-cross-circle' }))]),
              createElement('div', { id: 'bio', class: 'field' },
-                [createElement('div', {  }, createElement('span', { class: 'lnr lnr-bubble' }, null)),
+                [createElement('div', {  }, createElement('span', { class: 'lnr lnr-bubble' })),
                  createElement('textarea', { id: 'bio-text', placeholder: 'Bio',  }, user.bio)])]);
 }
 
@@ -383,31 +383,31 @@ function getInteractions(user, userInteractions, extra) {
       case 'like':
         if (updates[item.post].userId === primaryUser.id) {
           if (interaction === 'you ')
-            container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }, null), interaction + 'liked your own post']));
+            container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }), interaction + 'liked your own post']));
           else
-            container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }, null), addLinks(interaction + 'liked your post')]));
+            container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }), addLinks(interaction + 'liked your post')]));
           break;
         }
         if (interaction === '@' + users[updates[item.post].userId].username + ' ') {
-          container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }, null), addLinks(interaction + 'liked his own post')]));
+          container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }), addLinks(interaction + 'liked his own post')]));
           break;
         }
-        container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }, null), addLinks(interaction + 'liked @' + users[updates[item.post].userId].username + '\'s post')]));
+        container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }), addLinks(interaction + 'liked @' + users[updates[item.post].userId].username + '\'s post')]));
         break;
       case 'follow':
         if (users[item.user].username === primaryUser.username)
-          container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-eye" }, null), addLinks(interaction + 'followed you')]));
+          container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-eye" }), addLinks(interaction + 'followed you')]));
         else
-          container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-eye" }, null), addLinks(interaction + 'followed @' + users[item.user].username)]));
+          container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-eye" }), addLinks(interaction + 'followed @' + users[item.user].username)]));
         break;
     }
     interaction = '';
     itemsAdded++;
   }
   if (itemsAdded < interactionsArray.length)
-    container.appendChild(createElement('a', { class: 'more', href: '#' }, '• • • show more • • •', ['click', displayMoreInteractions, false]));
+    container.appendChild(createElement('a', { class: 'more' }, '• • • show more • • •', ['click', displayMoreInteractions]));
   else
-    container.appendChild(createElement('a', { class: 'more', href: '#' }, '• • •', ['click', minimizeInteractions, false]));
+    container.appendChild(createElement('a', { class: 'more' }, '• • •', ['click', minimizeInteractions]));
   return container;
 }
 
@@ -434,7 +434,7 @@ function stats(user) {
                   createElement('span', { id: 'followers', class: 'stat' },
                      [createElement('p', { class: 'label' }, 'followers'),
                       createElement('p', { class: 'count' }, user.followers.length)])],
-                ['click', function(e) { displayCenterContent(e, user) }, false]);
+                ['click', function(e) { displayCenterContent(e, user) }]);
   return stats;
 }
 
@@ -467,8 +467,8 @@ function displayCenterContent(event, user) {
 
 function updatePoster() {
   return createElement('div', { id: 'new-update', class: 'shadow' },
-            [createElement('textarea', { id: 'post-input', placeholder: 'Type a new update...' }, null),
-             createElement('button', { id: 'post-button' }, 'Post', ['click', addUpdate, false])]);
+            [createElement('textarea', { id: 'post-input', placeholder: 'Type a new update...' }),
+             createElement('button', { id: 'post-button' }, 'Post', ['click', addUpdate])]);
 }
 
 function addUpdate() {
@@ -532,14 +532,14 @@ function userUpdates(user) {
 
 function getUpdateElements(user, index) {
   var liked = (primaryUser.likes.indexOf(index) > -1);
-  var updateElements = [createElement('div', { class: 'photo', style: 'background-image:url('+ user.profilePic + ')' }, null, ['click', function() { displayProfile(user) } , false]),
-                        createElement('h4', { class: 'name' }, user.displayName, ['click', function() { displayProfile(user) } , false]),
-                        createElement('p', { class: 'username' }, '@' + user.username, ['click', function() { displayProfile(user) } , false]),
+  var updateElements = [createElement('div', { class: 'photo', style: 'background-image:url('+ user.profilePic + ')' }, null, ['click', function() { displayProfile(user) }]),
+                        createElement('h4', { class: 'name' }, user.displayName, ['click', function() { displayProfile(user) }]),
+                        createElement('p', { class: 'username' }, '@' + user.username, ['click', function() { displayProfile(user) }]),
                         createElement('p', { class: 'timestamp' }, updates[index].timestamp.format('h:mmA M/D/YY')),
                         createElement('p', { class: 'post' }, addLinks(updates[index].post)),
-                        createElement('button', { class: liked ? 'liked' : 'like' }, createElement('span', { class: 'lnr lnr-heart' }, null)),
+                        createElement('button', { class: liked ? 'liked' : 'like' }, createElement('span', { class: 'lnr lnr-heart' })),
                         createElement('span', { class: 'like-count' }, updates[index].likes.length)];
-  updateElements[5].addEventListener('click', function(e) { likePost(e.target, index) } , false);
+  updateElements[5].addEventListener('click', function(e) { likePost(e.target, index) });
   return updateElements;
 }
 
@@ -564,9 +564,9 @@ function addLinks(post) {
     }
     var eventListener;
     if (char === '#')
-      eventListener = ['click', function(e) { viewHashtag(e.target.lastChild.textContent) }, false];
+      eventListener = ['click', function(e) { viewHashtag(e.target.lastChild.textContent) }];
     else
-      eventListener = ['click', function(e) { displayProfile(users[users.findIndex(function(user){ return e.target.lastChild.textContent === user.username })]) }, false];
+      eventListener = ['click', function(e) { displayProfile(users[users.findIndex(function(user){ return e.target.lastChild.textContent === user.username })]) }];
     components.push(createElement('a', { class: 'hashtag', href: '#' }, [char, createElement('span', {  }, hashtag)], eventListener));
     post = post.substring(pointer);
   }
@@ -606,9 +606,9 @@ function likePost(updateElement, postId) {
 }
 
 function listOfUsers(references) {
-  var list = createElement('table', { id: 'list', class: 'shadow' }, null, ['click', function(e) { displayProfile((e.target.id && e.target.id !== 'list') ? users[e.target.id] : null) }, false]);
+  var list = createElement('table', { id: 'list', class: 'shadow' }, null, ['click', function(e) { displayProfile((e.target.id && e.target.id !== 'list') ? users[e.target.id] : null) }]);
   if (!references.length) {
-    var message = createElement('p', { class: 'message' }, null);
+    var message = createElement('p', { class: 'message' });
     if (currentlyViewing === primaryUser && viewing === 'following')
       message.textContent = 'You are not following any users yet.'
     else if (currentlyViewing === primaryUser)
@@ -624,16 +624,16 @@ function listOfUsers(references) {
   var rows = Math.floor(references.length / 2) + (oddRow ? 1 : 0);
   while (rows > 0) {
     if (!oddRow || rows > 1)
-      list.appendChild(createElement('tr', {  }, [createElement('td', { class: 'user' }, null), createElement('td', { class: 'user' }, null)]));
+      list.appendChild(createElement('tr', {  }, [createElement('td', { class: 'user' }), createElement('td', { class: 'user' })]));
     else
-      list.appendChild(createElement('tr', {  }, createElement('td', { class: 'user' }, null)));
+      list.appendChild(createElement('tr', {  }, createElement('td', { class: 'user' })));
     rows--;
   }
   var userElements = list.getElementsByClassName('user');
   for (var i = 0; i < userElements.length; i++) {
     var theUser = users[references[i]];
     userElements.item(i).setAttribute('id', references[i]);
-    userElements.item(i).appendChild(createElement('div', { class: 'photo', style: 'background-image:url(' + theUser.profilePic + ')' }, null));
+    userElements.item(i).appendChild(createElement('div', { class: 'photo', style: 'background-image:url(' + theUser.profilePic + ')' }));
     userElements.item(i).appendChild(createElement('h4', { class: 'name' }, theUser.displayName));
     userElements.item(i).appendChild(createElement('p', { class: 'username' }, '@' + theUser.username));
     userElements.item(i).appendChild(createElement('p', { class: 'stat' }, theUser.updatesCount + ' posts . ' + theUser.following.length + ' following . ' + theUser.followers.length + ' followers'));
@@ -655,7 +655,7 @@ function trending() { //top five hashtags: when there is a tie, newer hashtags t
     sorted.splice(pointer, 0, hashtag);
   }
   for (var i = 0; i < 5; i++)
-    trending.appendChild(createElement('a', { class: 'hashtag', href: '#' }, ['#', createElement('span', {  }, sorted[i])], ['click', function(e) { viewHashtag(e.target.lastChild.textContent) }, false]));
+    trending.appendChild(createElement('a', { class: 'hashtag', href: '#' }, ['#', createElement('span', {  }, sorted[i])], ['click', function(e) { viewHashtag(e.target.lastChild.textContent) }]));
   return trending;
 }
 
@@ -682,10 +682,10 @@ function suggestions() {
     if (user === primaryUser) return;
     var icon = primaryUser.following.includes(user.id) ? 'lnr-checkmark-circle' : 'lnr-plus-circle';
     suggestions.appendChild(createElement('div', { class: 'user' },
-                               [createElement('div', { class: 'photo', style: 'background-image:url(\'' + user.profilePic + '\')' }, null, ['click', function() { displayProfile(user) } , false]),
-                                createElement('h4', { class: 'name' }, user.displayName, ['click', function() { displayProfile(user) } , false]),
-                                createElement('p', { class: 'username' }, '@' + user.username, ['click', function() { displayProfile(user) } , false]),
-                                createElement('span', { class: 'plus lnr ' + icon }, null, ['click', function() { follow(user.id) } , false])]));
+                               [createElement('div', { class: 'photo', style: 'background-image:url(\'' + user.profilePic + '\')' }, null, ['click', function() { displayProfile(user) }]),
+                                createElement('h4', { class: 'name' }, user.displayName, ['click', function() { displayProfile(user) }]),
+                                createElement('p', { class: 'username' }, '@' + user.username, ['click', function() { displayProfile(user) }]),
+                                createElement('span', { class: 'plus lnr ' + icon }, null, ['click', function() { follow(user.id) }])]));
   });
   return suggestions;
 }
@@ -775,10 +775,10 @@ function getSearchResults(key) {
 
 function addResult(user) {
   return createElement('div', { class: 'result' },
-            [createElement('div', { class: 'photo', style: 'background-image:url(\'' + user.profilePic + '\')' }, null),
+            [createElement('div', { class: 'photo', style: 'background-image:url(\'' + user.profilePic + '\')' }),
              createElement('h4', { class: 'name' }, user.displayName),
              createElement('p', { class: 'username' }, '@' + user.username)],
-          ['click', function() { displayProfile(user) }, false]);
+          ['click', function() { displayProfile(user) }]);
 }
 
 function hideResults(event) {
@@ -792,9 +792,9 @@ goHome();
 right.appendChild(trending());
 right.appendChild(suggestions());
 
-document.getElementById('home-button').addEventListener('click', goHome, false);
-document.getElementById('profile-button').addEventListener('click', function() { displayProfile(primaryUser) }, false);
-document.getElementById('search-button').addEventListener('click', checkSearchInput, false);
-document.getElementById('search-input').addEventListener('keyup', function(e) { keyboardNav(e) }, false);
-document.getElementById('search-input').addEventListener('focus', displayResults, false);
-document.getElementById('body').addEventListener('click', function(e) { hideResults(e) }, false);
+document.getElementById('home-button').addEventListener('click', goHome);
+document.getElementById('profile-button').addEventListener('click', function() { displayProfile(primaryUser) });
+document.getElementById('search-button').addEventListener('click', checkSearchInput);
+document.getElementById('search-input').addEventListener('keyup', function(e) { keyboardNav(e) });
+document.getElementById('search-input').addEventListener('focus', displayResults);
+document.getElementById('body').addEventListener('click', function(e) { hideResults(e) });
