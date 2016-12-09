@@ -142,10 +142,12 @@ var left = document.getElementById('left');
 var center = document.getElementById('center');
 var right = document.getElementById('right');
 
+// Takes a formatted time and returns a new Moment obj.
 function newMoment(timestamp) {
   return moment(timestamp, 'h:mmA M/D/YY');
 }
 
+// Returns a new element w/ the given tag, attrubutes, children, & eventListener
 function createElement(tag, attributes, children, eventListener) {
   var newElement = document.createElement(tag);
   for (var key in attributes) {
@@ -176,9 +178,10 @@ function createElement(tag, attributes, children, eventListener) {
   return newElement;
 }
 
+// Displays the user profile of the given user.
 function displayProfile(user) {
   if (!user) return;
-  remove('empty', ['left', 'center'])
+  removeElements('empty', ['left', 'center'])
   currentlyViewing = user;
   left.appendChild(userInfo(user));
   left.appendChild(getInteractions(user, user.interactions, 0));
@@ -186,6 +189,7 @@ function displayProfile(user) {
   document.getElementById('posts').click();
 }
 
+// Follows the user with the given userId
 function follow(id) {
   var following = primaryUser.following.includes(id);
   var suggestions = document.getElementsByClassName('plus');
@@ -218,7 +222,7 @@ function follow(id) {
     document.getElementById(viewing).click();
   }
   if (currentlyViewing === primaryUser) {
-    remove('remove', 'interactions');
+    removeElements('remove', 'interactions');
     left.appendChild(getInteractions(primaryUser, primaryUser.interactions, 0));
     return;
   }
@@ -226,7 +230,8 @@ function follow(id) {
   document.getElementById('follow').firstChild.data = following ? 'Follow' : 'Following';
 }
 
-function remove(action, ids) {
+// Either empties or removes elements of the specific ids from the DOM
+function removeElements(action, ids) {
   if (! (ids instanceof Array))
     ids = [ids];
   ids.forEach(function (id) {
@@ -244,8 +249,9 @@ function remove(action, ids) {
   });
 }
 
+// Displays the home page w/ updates from all users the primary user is following
 function goHome() {
-  remove('empty', ['left', 'center']);
+  removeElements('empty', ['left', 'center']);
   currentlyViewing = null;
   left.appendChild(userInfo(primaryUser));
   left.appendChild(getInteractions(currentlyViewing, interactions, 0));
@@ -253,6 +259,7 @@ function goHome() {
   center.appendChild(allUpdates());
 }
 
+// Returns #updates element containing all updates for the users the primary user is following
 function allUpdates() {
   var updatesToDisplay = [];
   for (var updateId in updates) {
@@ -265,6 +272,7 @@ function allUpdates() {
   return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
 }
 
+// Returns #user-info element containing the info specific to the given user: photo, name, username, bio, etc...
 function userInfo(user) {
   var eventListener = ['click', function() { displayProfile(user) }];
   var userInfo = createElement('div', { id: 'user-info' },
@@ -286,8 +294,9 @@ function userInfo(user) {
   return userInfo;
 }
 
+// Displays the profile editor where the primary user can edit his/her user info.
 function editProfile() {
-  remove('remove', ['description', 'edit-profile']);
+  removeElements('remove', ['description', 'edit-profile']);
   var userInfo = document.getElementById('user-info');
   userInfo.appendChild(createElement('input', { id: 'image-upload', type: 'file' }, null, ['change', changeProfilePic]));
   userInfo.appendChild(createElement('label', { for: 'image-upload' }, createElement('span', { class: 'lnr lnr-camera' })));
@@ -296,6 +305,7 @@ function editProfile() {
   userInfo.appendChild(createElement('button', { id: 'save' }, 'Save', ['click', saveProfile]));
 }
 
+// Changes the profile photo to whatever img file the user uploads, currently only works if photo is located in 'images' folder
 function changeProfilePic() {
   var img = 'images/' + document.getElementById('image-upload').files[0].name;
   primaryUser.profilePic = img;
@@ -305,6 +315,7 @@ function changeProfilePic() {
   }
 }
 
+// Returns #editor element containing all child elements that make up the profile editor
 function editor(user) {
   return createElement('div', { id: 'editor', class: 'shadow' },
             [createElement('div', { id: 'name', class: 'field' },
@@ -320,6 +331,7 @@ function editor(user) {
                  createElement('textarea', { id: 'bio-text', placeholder: 'Bio',  }, user.bio)])]);
 }
 
+// Checks the given value for a valid username and dynamically displays whether or not the username is o.k.
 function checkUsername(value) {
   var validCharacters = /^[a-z0-9_]*$/;
   var message = document.getElementById('error-msg');
@@ -346,6 +358,7 @@ function checkUsername(value) {
   check.style.visibility = 'visible';
 }
 
+// Saves the changes made by the user to their user info if all fields are inputed correctly
 function saveProfile() {
   if (!document.getElementById('name-text').value.trim()) {
     document.getElementById('error-msg').textContent = '*your name cannot be blank*';
@@ -362,6 +375,7 @@ function saveProfile() {
   displayProfile(primaryUser);
 }
 
+// 'Interactions' section: Returns #interactons element containing the interactions of the primary user + users he/she is following
 function getInteractions(user, userInteractions, extra) {
   var interactionsArray = [];
   var interaction = '';
@@ -411,18 +425,21 @@ function getInteractions(user, userInteractions, extra) {
   return container;
 }
 
+// Minimizes the interactions div and returns the display to 10 interactions
 function minimizeInteractions() {
-  remove('remove', 'interactions');
+  removeElements('remove', 'interactions');
   interactionsDisplayed = 10;
   left.appendChild(getInteractions(currentlyViewing, currentlyViewing ? currentlyViewing.interactions : interactions, 0));
 }
 
+// Displays up to 5 more interactions in the interactions div
 function displayMoreInteractions() {
-  remove('remove', 'interactions');
+  removeElements('remove', 'interactions');
   left.appendChild(getInteractions(currentlyViewing, currentlyViewing ? currentlyViewing.interactions : interactions, 5));
   interactionsDisplayed += 5;
 }
 
+// Returns #stats element with the given users stats: # of posts, # of users he/she is following, & # of followers
 function stats(user) {
   var stats = createElement('div', { id: 'stats', class: 'shadow' },
                  [createElement('span', { id: 'posts', class: 'stat' },
@@ -438,13 +455,15 @@ function stats(user) {
   return stats;
 }
 
+// Refreshes #stats element on profile. Called when a new user is followed/unfollowed, new post, etc...
 function refreshStats() {
-  remove('remove', 'stats');
+  removeElements('remove', 'stats');
   center.insertBefore(stats(currentlyViewing), center.firstChild);
 }
 
+// Modifies content in center container to display posts, following, or followers. Called when stats is clicked.
 function displayCenterContent(event, user) {
-  remove('remove', ['hashtag', 'new-update', 'updates', 'list'])
+  removeElements('remove', ['hashtag', 'new-update', 'updates', 'list'])
   if (viewing) document.getElementById(viewing).style.borderColor = null;
   event.target.style.borderColor = '#81a9ca';
   switch (event.target) {
@@ -465,12 +484,14 @@ function displayCenterContent(event, user) {
   }
 }
 
+// Returns #new-update element for posting a new update.
 function updatePoster() {
   return createElement('div', { id: 'new-update', class: 'shadow' },
             [createElement('textarea', { id: 'post-input', placeholder: 'Type a new update...' }),
              createElement('button', { id: 'post-button' }, 'Post', ['click', addUpdate])]);
 }
 
+// Adds new updates that are posted to the data model, and displays them if applicable.
 function addUpdate() {
   var updatesContainer = document.getElementById('updates');
   var post = document.getElementById('post-input').value;
@@ -490,6 +511,7 @@ function addUpdate() {
     updatesContainer.removeChild(updatesContainer.lastChild);
 }
 
+// Checks the given post for hashtags and adds them to the data model.
 function addHashtags(post, id) {
   var newHashtags = false;
   post = post.toLowerCase();
@@ -510,11 +532,12 @@ function addHashtags(post, id) {
     post = post.substring(pointer);
   }
   if (newHashtags) {
-    remove('remove', 'trending');
+    removeElements('remove', 'trending');
     right.insertBefore(trending(), document.getElementById('suggestions'));
   }
 }
 
+// Returns an #updates element containing all updates for any one given user.
 function userUpdates(user) {
   var updatesToDisplay = []
   for (var updateId in updates) {
@@ -530,6 +553,7 @@ function userUpdates(user) {
   return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
 }
 
+// Returns an #update element representing a single update.
 function getUpdateElements(user, index) {
   var liked = (primaryUser.likes.indexOf(index) > -1);
   var updateElements = [createElement('div', { class: 'photo', style: 'background-image:url('+ user.profilePic + ')' }, null, ['click', function() { displayProfile(user) }]),
@@ -543,6 +567,7 @@ function getUpdateElements(user, index) {
   return updateElements;
 }
 
+// Adds links for either #hashtags or @user tags. The links will link to hashtag page or user profile when clicked.
 function addLinks(post) {
   var components = []
   if (post.search(/[#@]/) === -1) {
@@ -574,6 +599,7 @@ function addLinks(post) {
   return components;
 }
 
+// 'Likes' the given post and records the like in the data model.
 function likePost(updateElement, postId) {
   var liked = (updateElement.className === 'liked');
   if (!liked) {
@@ -595,16 +621,17 @@ function likePost(updateElement, postId) {
     primaryUser.interactions.splice(primaryUser.interactions.indexOf(indexToRemove), 1);
   }
   if (!currentlyViewing) {
-    remove('remove', 'interactions');
+    removeElements('remove', 'interactions');
     left.appendChild(getInteractions(currentlyViewing, interactions, 0));
   }
   if (currentlyViewing === primaryUser) {
-    remove('remove', 'interactions');
+    removeElements('remove', 'interactions');
     left.appendChild(getInteractions(primaryUser, primaryUser.interactions, 0));
   }
   updateElement.parentElement.lastChild.textContent = updates[postId].likes.length;
 }
 
+// Returns #list element containing a lists of users (for displaying following & followers)
 function listOfUsers(references) {
   var list = createElement('table', { id: 'list', class: 'shadow' }, null, ['click', function(e) { displayProfile((e.target.id && e.target.id !== 'list') ? users[e.target.id] : null) }]);
   if (!references.length) {
@@ -641,7 +668,8 @@ function listOfUsers(references) {
   return list;
 }
 
-function trending() { //top five hashtags: when there is a tie, newer hashtags take priority
+// 'Trending' section: Returns #trending element containing top five hashtags. When there is a tie, newer hashtags take priority.
+function trending() {
   var trending = createElement('div', { id: 'trending' }, createElement('h3', {  }, 'Trending'));
   var sorted = [];
   for (var hashtag in hashtags) {
@@ -659,8 +687,9 @@ function trending() { //top five hashtags: when there is a tie, newer hashtags t
   return trending;
 }
 
+// Displays a page for the given hashtag, and displays all updates containing that hashtag on the page.
 function viewHashtag(hashtag) {
-  remove('empty', ['center', 'left']);
+  removeElements('empty', ['center', 'left']);
   currentlyViewing = null;
   center.appendChild(createElement('h2', { id: 'hashtag', class: 'shadow' }, '#' + hashtag));
   center.appendChild(hashtagUpdates(hashtag));
@@ -668,6 +697,7 @@ function viewHashtag(hashtag) {
   left.appendChild(getInteractions(currentlyViewing, interactions, 0));
 }
 
+// Returns #updates element containing all updates containg the given hashtag
 function hashtagUpdates(hashtag) {
   var updatesToDisplay = [];
   hashtags[hashtag].forEach(function (updateId) {
@@ -676,6 +706,7 @@ function hashtagUpdates(hashtag) {
   return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
 }
 
+// 'Who To Follow' section: Returns div element containing a list of all users besides the primary user.
 function suggestions() {
   var suggestions = createElement('div', { id: 'suggestions' }, [createElement('h3', {  }, 'Who to follow')]);
   users.forEach( function(user) {
@@ -690,6 +721,7 @@ function suggestions() {
   return suggestions;
 }
 
+// Attemps to display the profile of whatever user's username is typed into the search bar.
 function checkSearchInput() {
   var input = document.getElementById('search-input').value;
   if (!input.trim()) return;
@@ -700,6 +732,7 @@ function checkSearchInput() {
 var focusResult;
 var lastFocused = null;
 
+// User can navigate through search results using arrow keys, and search results dynamically update as user types
 function keyboardNav(e) {
   var results = document.getElementsByClassName('result');
   switch (e.keyCode) {
@@ -728,6 +761,7 @@ function keyboardNav(e) {
   }
 }
 
+// Search results are displayed directly underneathe search bar
 function displayResults() {
   focusResult = -1;
   var input = document.getElementById('search-input').value.toLowerCase();
@@ -748,6 +782,7 @@ function displayResults() {
   resultsContainer.style.visibility = 'visible';
 }
 
+// Returns an array of .result elements for the search bar
 function getSearchResults(key) {
   var primaryUserAdded = false;
   var results = [];
@@ -773,6 +808,7 @@ function getSearchResults(key) {
   return results;
 }
 
+// Returns a single .result element for the search bar
 function addResult(user) {
   return createElement('div', { class: 'result' },
             [createElement('div', { class: 'photo', style: 'background-image:url(\'' + user.profilePic + '\')' }),
@@ -781,6 +817,7 @@ function addResult(user) {
           ['click', function() { displayProfile(user) }]);
 }
 
+// Hides the #results element from being visible in the search bar.
 function hideResults(event) {
   if (event && (event.target === document.getElementById('results') || event.target === document.getElementById('search-input'))) return;
   document.getElementById('results').style.visibility = 'hidden';
@@ -788,10 +825,12 @@ function hideResults(event) {
   document.getElementById('search-button').style.borderBottomRightRadius = '15px';
 }
 
+// Initializes webpage to load with the home page + 'Trending' section and 'Who to Follow' section
 goHome();
 right.appendChild(trending());
 right.appendChild(suggestions());
 
+// Adds event listeners to the header (navigation buttons and the search bar)
 document.getElementById('home-button').addEventListener('click', goHome);
 document.getElementById('profile-button').addEventListener('click', function() { displayProfile(primaryUser) });
 document.getElementById('search-button').addEventListener('click', checkSearchInput);
