@@ -309,9 +309,10 @@ function editProfile() {
 function changeProfilePic() {
   var img = 'images/' + document.getElementById('image-upload').files[0].name;
   primaryUser.profilePic = img;
-  var photos = document.getElementsByClassName('photo');
-  for (var i = 0; i < photos.length; i++) {
-    photos[i].style.backgroundImage = 'url(\'' + img + '\')';
+  document.getElementById('user-info').getElementById('photo').style.backgroundImage = 'url(\'' + img + '\')';
+  var updatePhotos = document.getElementById('updates').getElementsByClassName('photo');
+  for (var i = 0; i < updatePhotos.length; i++) {
+    updatePhotos[i].style.backgroundImage = 'url(\'' + img + '\')';
   }
 }
 
