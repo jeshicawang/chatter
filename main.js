@@ -309,7 +309,7 @@ function editProfile() {
 function changeProfilePic() {
   var img = 'images/' + document.getElementById('image-upload').files[0].name;
   primaryUser.profilePic = img;
-  document.getElementById('user-info').getElementById('photo').style.backgroundImage = 'url(\'' + img + '\')';
+  document.getElementById('user-info').getElementsByClassName('photo')[0].style.backgroundImage = 'url(\'' + img + '\')';
   var updatePhotos = document.getElementById('updates').getElementsByClassName('photo');
   for (var i = 0; i < updatePhotos.length; i++) {
     updatePhotos[i].style.backgroundImage = 'url(\'' + img + '\')';
