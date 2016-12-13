@@ -5,19 +5,21 @@ var users = [ { id: 0,
                 displayName: 'Jessica Wang',
                 profilePic: 'images/jwang.jpg',
                 bio: 'Coffee lover. Dancer. Future software developer;)',
-                following: [3, 5],
+                following: [3, 5, 1],
                 followers: [1, 2, 3, 4, 5, 6, 7],
                 updatesCount: 5,
-                likes: ['6', '8', '9'] },
+                likes: ['6', '8', '9'],
+                interactions: [0, 1, 2, 15, 16, 17] },
               { id: 1,
                 username: 'biagi',
                 displayName: 'Rodolfo Biagi',
                 profilePic: 'images/biagi.jpg',
                 bio: 'An Argentine Tango musician who started his musical career by playing background music for silent movies.',
                 following: [0],
-                followers: [],
+                followers: [0],
                 updatesCount: 3,
-                likes: [] },
+                likes: [],
+                interactions: [8] },
               { id: 2,
                 username: 'varela',
                 displayName: 'Hector Varela',
@@ -26,7 +28,8 @@ var users = [ { id: 0,
                 following: [0],
                 followers: [],
                 updatesCount: 2,
-                likes: [] },
+                likes: [],
+                interactions: [9] },
               { id: 3,
                 username: 'donato',
                 displayName: 'Edgardo Donato',
@@ -35,7 +38,8 @@ var users = [ { id: 0,
                 following: [0],
                 followers: [0],
                 updatesCount: 0,
-                likes: [] },
+                likes: [],
+                interactions: [10] },
               { id: 4,
                 username: 'diaz',
                 displayName: 'Hugo Diaz',
@@ -44,7 +48,8 @@ var users = [ { id: 0,
                 following: [0],
                 followers: [],
                 updatesCount: 0,
-                likes: ['1', '2', '6', '8', '9'] },
+                likes: ['1', '2', '6', '8', '9'],
+                interactions: [3, 4, 5, 6, 7, 11] },
               { id: 5,
                 username: 'dagostino',
                 displayName: 'Angel D\'Agostino',
@@ -53,7 +58,8 @@ var users = [ { id: 0,
                 following: [0],
                 followers: [0],
                 updatesCount: 0,
-                likes: [] },
+                likes: [],
+                interactions: [12] },
               { id: 6,
                 username: 'darienzo',
                 displayName: 'Juan D\'Arienzo',
@@ -62,7 +68,8 @@ var users = [ { id: 0,
                 following: [0],
                 followers: [],
                 updatesCount: 0,
-                likes: [] },
+                likes: [],
+                interactions: [13] },
               { id: 7,
                 username: 'demare',
                 displayName: 'Lucio Demare',
@@ -71,12 +78,14 @@ var users = [ { id: 0,
                 following: [0],
                 followers: [],
                 updatesCount: 0,
-                likes: [] },
+                likes: [],
+                interactions: [14] }
 ];
 
 var primaryUser = users[0];
 var currentlyViewing = primaryUser;
 var viewing = null;
+var interactionsDisplayed = 10;
 
 var updates = { 0: { userId: 2, timestamp: newMoment('7:00AM 11/21/16'), post: 'Es la historia de un amor, como no hay otro igual. Que me hizo comprender, todo el bien todo el mal, que le dio luz a mi vida, apagandola después. ¡Ay, qué vida tan oscura, corazón, sin tu amor no viviré! #historiadeunamor #tango', likes: [] },
                 1: { userId: 0, timestamp: newMoment('9:00AM 11/22/16'), post: 'Starting my weekday by going to coding class!', likes: [4] },
@@ -109,6 +118,25 @@ var hashtags = { adiosarrabal: [13],
                  tango: [0, 3, 4, 5, 7, 11, 12, 13],
                  todoesamor: [5] };
 
+var interactions = [ { userId: 0, activity: 'like', post: '6' },
+                     { userId: 0, activity: 'like', post: '8' },
+                     { userId: 0, activity: 'like', post: '9' },
+                     { userId: 4, activity: 'like', post: '1' },
+                     { userId: 4, activity: 'like', post: '2' },
+                     { userId: 4, activity: 'like', post: '6' },
+                     { userId: 4, activity: 'like', post: '8' },
+                     { userId: 4, activity: 'like', post: '9' },
+                     { userId: 1, activity: 'follow', user: 0 },
+                     { userId: 2, activity: 'follow', user: 0 },
+                     { userId: 3, activity: 'follow', user: 0 },
+                     { userId: 4, activity: 'follow', user: 0 },
+                     { userId: 5, activity: 'follow', user: 0 },
+                     { userId: 6, activity: 'follow', user: 0 },
+                     { userId: 7, activity: 'follow', user: 0 },
+                     { userId: 0, activity: 'follow', user: 3 },
+                     { userId: 0, activity: 'follow', user: 5 },
+                     { userId: 0, activity: 'follow', user: 1 } ];
+
 function newMoment(timestamp) {
   return moment(timestamp, 'h:mmA M/D/YY');
 }
@@ -125,21 +153,28 @@ function createElement(tag, attributes, children) {
   }
   if (!(children instanceof Array))
     children = [children];
-  children.forEach( function(child) {
-    if (!(child instanceof Element)) {
-      newElement.appendChild(document.createTextNode(child));
-      return;
-    }
-      newElement.appendChild(child);
-  });
+  var appendChildren = function(c) {
+    c.forEach( function(child) {
+      if (!(child instanceof Element) && !(child instanceof Array)) {
+        newElement.appendChild(document.createTextNode(child));
+        return;
+      }
+      if (child instanceof Array)
+        appendChildren(child);
+      else
+        newElement.appendChild(child);
+    });
+  }
+  appendChildren(children);
   return newElement;
 }
 
 function displayProfile(user) {
   if (!user) return;
-  remove(['user-info', 'hashtag', 'stats', 'new-update', 'updates']);
+  remove(['user-info', 'interactions', 'hashtag', 'stats', 'new-update', 'updates']);
   currentlyViewing = user;
   document.getElementById('left').appendChild(userInfo(user));
+  document.getElementById('left').appendChild(getInteractions(user, user.interactions, 0));
   document.getElementById('center').appendChild(stats(user));
   document.getElementById('posts').click();
 }
@@ -152,18 +187,33 @@ function follow(id) {
     suggestions[index].className = 'plus lnr lnr-checkmark-circle';
     primaryUser.following.unshift(id);
     users[id].followers.unshift(primaryUser.id);
+    primaryUser.interactions.push(interactions.length);
+    interactions.push( { userId: primaryUser.id, activity: 'follow', user: id } );
   } else {
     suggestions[index].className = 'plus lnr lnr-plus-circle';
     index = primaryUser.following.indexOf(id);
     primaryUser.following.splice(index, 1);
     index = users[id].followers.indexOf(primaryUser.id);
     users[id].followers.splice(index, 1);
+    var indexToRemove = interactions.findIndex(function(interaction) {
+      if(!interaction)
+        return;
+      return interaction['activity'] === 'follow' && interaction['user'] === id && interaction['userId'] == primaryUser.id;
+    });
+    interactions.splice(indexToRemove, 1, null);
+    primaryUser.interactions.splice(primaryUser.interactions.indexOf(indexToRemove), 1);
   }
-  if (!currentlyViewing)
+  if (!currentlyViewing) {
     goHome();
-  else {
+    return;
+  } else {
     refreshStats(currentlyViewing);
     document.getElementById(viewing).click();
+  }
+  if (currentlyViewing === primaryUser) {
+    remove('interactions');
+    document.getElementById('left').appendChild(getInteractions(primaryUser, primaryUser.interactions, 0));
+    return;
   }
   if (currentlyViewing !== users[id]) return;
   document.getElementById('follow').firstChild.data = following ? 'Follow' : 'Following';
@@ -191,11 +241,12 @@ function empty(ids) {
 }
 
 function goHome() {
-  remove(['user-info', 'hashtag', 'stats', 'new-update', 'updates', 'list']);
+  remove(['user-info', 'interactions', 'hashtag', 'stats', 'new-update', 'updates', 'list']);
   currentlyViewing = null;
-  var centerContainer = document.getElementById('center');
-  centerContainer.appendChild(updatePoster());
-  centerContainer.appendChild(allUpdates());
+  document.getElementById('left').appendChild(userInfo(primaryUser));
+  document.getElementById('left').appendChild(getInteractions(currentlyViewing, interactions, 0));
+  document.getElementById('center').appendChild(updatePoster());
+  document.getElementById('center').appendChild(allUpdates());
 }
 
 function allUpdates() {
@@ -215,10 +266,13 @@ function userInfo(user) {
                     [createElement('div', { class: 'photo' }, null),
                      createElement('div', { id: 'description' },
                         [createElement('h2', { id: 'name' }, user.displayName),
-                         createElement('p', { id: 'username' }, '@' + user.username),
+                         createElement('p', { id: 'username' }, addLinks('@' + user.username)),
                          createElement('p', { id: 'about-me' }, user.bio)])]);
   var profilePic = userInfo.firstChild;
   profilePic.style.backgroundImage = 'url(' + user.profilePic + ')';
+  if (!currentlyViewing) {
+    return userInfo;
+  }
   if (user === primaryUser) {
     userInfo.appendChild(createElement('button', { id: 'edit-profile' }, 'Edit Profile'));
     userInfo.lastChild.addEventListener('click', function() { editProfile() }, false);
@@ -309,6 +363,69 @@ function saveProfile() {
   displayProfile(primaryUser);
 }
 
+function getInteractions(user, userInteractions, extra) {
+  var interactionsArray = [];
+  var interaction = '';
+  if (user) {
+    if (user === primaryUser)
+      interaction += 'you ';
+    else
+      interaction += '@' + user.username + ' ';
+    userInteractions.forEach( function(index) {
+      interactionsArray.push(interactions[index]);
+    });
+  } else
+    interactionsArray = userInteractions.slice();
+  var container = createElement('div', { id: 'interactions' }, createElement('h3', {  }, 'Interactions'));
+  var itemsAdded = 0;
+  interactionsArray.reverse().forEach( function(item) {
+    if(!item || itemsAdded >= (interactionsDisplayed + extra))
+      return;
+    itemsAdded++;
+    if (!user)
+      if (users[item.userId] === primaryUser)
+        interaction += 'you ';
+      else
+        interaction += '@' + users[item.userId].username + ' ';
+    switch (item.activity) {
+      case 'like':
+        if (updates[item.post].userId === primaryUser.id) {
+          if (interaction === 'you ')
+            container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }, null), interaction + 'liked your own post']));
+          else
+            container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }, null), addLinks(interaction + 'liked your post')]));
+          break;
+        }
+        if (interaction === '@' + users[updates[item.post].userId].username + ' ') {
+          container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }, null), addLinks(interaction + 'liked his own post')]));
+          break;
+        }
+        container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }, null), addLinks(interaction + 'liked @' + users[updates[item.post].userId].username + '\'s post')]));
+        break;
+      case 'follow':
+        if (users[item.user].username === primaryUser.username)
+          container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-eye" }, null), addLinks(interaction + 'followed you')]));
+        else
+          container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-eye" }, null), addLinks(interaction + 'followed @' + users[item.user].username)]));
+        break;
+    }
+    if (!user) interaction = '';
+  });
+  container.appendChild(createElement('a', { class: 'more', href: '#' }, (itemsAdded < interactionsArray.length) ? '• • • more • • •' : '• • •'));
+  if (container.lastChild.textContent === '• • •') {
+    container.lastChild.className = 'more no-more';
+    return container;
+  }
+  container.lastChild.addEventListener('click', displayMoreInteractions, false);
+  return container;
+}
+
+function displayMoreInteractions() {
+  remove('interactions');
+  document.getElementById('left').appendChild(getInteractions(currentlyViewing, currentlyViewing ? currentlyViewing.interactions : interactions, 5));
+  interactionsDisplayed += 5;
+}
+
 function stats(user) {
   var stats = createElement('div', { id: 'stats', class: 'shadow' },
                  [createElement('span', { id: 'posts', class: 'stat' },
@@ -382,7 +499,7 @@ function addUpdate() {
 function addHashtags(post, id) {
   var newHashtags = false;
   post = post.toLowerCase();
-  var validCharacters = /^[a-z0-9]*$/;
+  var validCharacters = /^[a-z0-9_]*$/;
   while (post.indexOf('#') > -1) {
     post = post.substring(post.indexOf('#') + 1);
     var pointer = 0;
@@ -425,7 +542,7 @@ function getUpdateElements(user, index) {
                         createElement('h4', { class: 'name' }, user.displayName),
                         createElement('p', { class: 'username' }, '@' + user.username),
                         createElement('p', { class: 'timestamp' }, updates[index].timestamp.format('h:mmA M/D/YY')),
-                        createElement('p', { class: 'post' }, translateHashtags(updates[index].post)),
+                        createElement('p', { class: 'post' }, addLinks(updates[index].post)),
                         createElement('button', { class: liked ? 'liked' : 'like' }, createElement('span', { class: 'lnr lnr-heart' }, null)),
                         createElement('span', { class: 'like-count' }, updates[index].likes.length)];
   updateElements[1].addEventListener('click', function() { displayProfile(user) } , false);
@@ -434,28 +551,33 @@ function getUpdateElements(user, index) {
   return updateElements;
 }
 
-function translateHashtags(post) {
+function addLinks(post) {
   var components = []
-  if (post.indexOf('#') === -1) {
+  if (post.search(/[#@]/) === -1) {
     components.push(post);
     return components;
   }
-  var validCharacters = /^[A-Za-z0-9]*$/;
-  while (post.indexOf('#') > -1) {
-    components.push(post.substring(0, post.indexOf('#')))
-    post = post.substring(post.indexOf('#') + 1);
+  var validCharacters = /^[A-Za-z0-9_]*$/;
+  while (post.search(/[#@]/) > -1) {
+    var char = post.charAt(post.search(/[#@]/));
+    components.push(post.substring(0, post.indexOf(char)))
+    post = post.substring(post.indexOf(char) + 1);
     var pointer = 0;
     while (pointer < post.length && validCharacters.test(post.charAt(pointer)))
       pointer++;
     var hashtag = post.substring(0, pointer);
     if (!hashtag.length) {
-      components.push('#');
+      components.push(char);
       continue;
     }
-    components.push(createElement('a', { class: 'hashtag', href: '#' }, ['#', createElement('span', {  }, hashtag)]));
-    components[components.length-1].addEventListener('click', function(e) { viewHashtag(e.target.lastChild.textContent) }, false);
+    components.push(createElement('a', { class: 'hashtag', href: '#' }, [char, createElement('span', {  }, hashtag)]));
+    if (char === '#')
+      components[components.length-1].addEventListener('click', function(e) { viewHashtag(e.target.lastChild.textContent) }, false);
+    else
+      components[components.length-1].addEventListener('click', function(e) { displayProfile(users[users.findIndex(function(user){ return e.target.lastChild.textContent === user.username })]) }, false);
     post = post.substring(pointer);
   }
+  if (post) components.push(post);
   return components;
 }
 
@@ -465,10 +587,27 @@ function likePost(updateElement, postId) {
     primaryUser.likes.push(postId);
     updates[postId].likes.push(primaryUser.id);
     updateElement.className = 'liked';
+    primaryUser.interactions.push(interactions.length);
+    interactions.push({ userId: primaryUser.id, activity: 'like', post: postId });
   } else {
     primaryUser.likes.splice(primaryUser.likes.indexOf(postId), 1);
     updates[postId].likes.splice(updates[postId].likes.indexOf(primaryUser.id), 1);
     updateElement.className = 'like';
+    var indexToRemove = interactions.findIndex(function(interaction) {
+      if(!interaction)
+        return;
+      return interaction['activity'] === 'like' && interaction['post'] === postId && interaction['userId'] == primaryUser.id;
+    });
+    interactions.splice(indexToRemove, 1, null);
+    primaryUser.interactions.splice(primaryUser.interactions.indexOf(indexToRemove), 1);
+  }
+  if (!currentlyViewing) {
+    remove('interactions');
+    document.getElementById('left').appendChild(getInteractions(currentlyViewing, interactions, 0));
+  }
+  if (currentlyViewing === primaryUser) {
+    remove('interactions');
+    document.getElementById('left').appendChild(getInteractions(primaryUser, primaryUser.interactions, 0));
   }
   updateElement.parentElement.lastChild.textContent = updates[postId].likes.length;
 }
@@ -531,16 +670,20 @@ function trending() { //top five hashtags: when there is a tie, newer hashtags t
 }
 
 function viewHashtag(hashtag) {
-  var centerContainer = document.getElementById('center');
+  var center = document.getElementById('center');
+  var left = document.getElementById('left');
   empty(['center', 'left']);
-  centerContainer.appendChild(createElement('h2', { id: 'hashtag', class: 'shadow' }, '#' + hashtag));
-  centerContainer.appendChild(hashtagUpdates(hashtag));
+  currentlyViewing = null;
+  center.appendChild(createElement('h2', { id: 'hashtag', class: 'shadow' }, '#' + hashtag));
+  center.appendChild(hashtagUpdates(hashtag));
+  left.appendChild(userInfo(primaryUser));
+  left.appendChild(getInteractions(currentlyViewing, interactions, 0));
 }
 
 function hashtagUpdates(hashtag) {
   var updatesToDisplay = [];
   hashtags[hashtag].forEach(function (updateId) {
-    updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(users[updates[updateId].userId], updateId)));
+    updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(users[updates[updateId].userId], updateId.toString())));
   });
   return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
 }
@@ -661,10 +804,9 @@ function hideResults(event) {
   document.getElementById('search-button').style.borderBottomRightRadius = '15px';
 }
 
-displayProfile(primaryUser);
-var rightContainer = document.getElementById('right');
-rightContainer.appendChild(trending());
-rightContainer.appendChild(suggestions());
+goHome();
+document.getElementById('right').appendChild(trending());
+document.getElementById('right').appendChild(suggestions());
 
 document.getElementById('home-button').addEventListener('click', goHome, false);
 document.getElementById('profile-button').addEventListener('click', function() { displayProfile(primaryUser) }, false);
