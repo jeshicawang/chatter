@@ -4,7 +4,7 @@ var users = [ { id: 0,
                 username: 'jwang',
                 displayName: 'Jessica Wang',
                 profilePic: 'images/jwang.jpg',
-                bio: 'Coffee lover. Dancer. Future software developer;)',
+                bio: 'Coffee lover. Dancer. Developer;)',
                 following: [3, 5, 1],
                 followers: [1, 2, 3, 4, 5, 6, 7],
                 updatesCount: 5,
@@ -275,7 +275,7 @@ function allUpdates() {
 // Returns #user-info element containing the info specific to the given user: photo, name, username, bio, etc...
 function userInfo(user) {
   var eventListener = ['click', function() { displayProfile(user) }];
-  var userInfo = createElement('div', { id: 'user-info' },
+  var userInfo = createElement('div', { id: 'user-info', class: 'shadow' },
                     [createElement('div', { class: 'photo' }, null, eventListener),
                      createElement('div', { id: 'description' },
                         [createElement('h2', { id: 'name' }, user.displayName, eventListener),
@@ -383,7 +383,7 @@ function getInteractions(user, userInteractions, extra) {
     userInteractions.forEach( function(index) { interactionsArray.push(interactions[index]); });
   else
     interactionsArray = userInteractions.filter( function(item) { return item && (item.userId === primaryUser.id || primaryUser.following.indexOf(item.userId) > -1) });
-  var container = createElement('div', { id: 'interactions' }, createElement('h3', {  }, 'Interactions'));
+  var container = createElement('div', { id: 'interactions', class: 'shadow' }, createElement('h3', {  }, 'Interactions'));
   var itemsAdded = 0;
   interactionsArray.reverse()
   while (itemsAdded < interactionsDisplayed + extra) {
@@ -670,7 +670,7 @@ function listOfUsers(references) {
 
 // 'Trending' section: Returns #trending element containing top five hashtags. When there is a tie, newer hashtags take priority.
 function trending() {
-  var trending = createElement('div', { id: 'trending' }, createElement('h3', {  }, 'Trending'));
+  var trending = createElement('div', { id: 'trending', class: 'shadow' }, createElement('h3', {  }, 'Trending'));
   var sorted = [];
   for (var hashtag in hashtags) {
     if (!sorted.length) {
@@ -708,7 +708,7 @@ function hashtagUpdates(hashtag) {
 
 // 'Who To Follow' section: Returns div element containing a list of all users besides the primary user.
 function suggestions() {
-  var suggestions = createElement('div', { id: 'suggestions' }, [createElement('h3', {  }, 'Who to follow')]);
+  var suggestions = createElement('div', { id: 'suggestions', class: 'shadow' }, [createElement('h3', {  }, 'Who to follow')]);
   users.forEach( function(user) {
     if (user === primaryUser) return;
     var icon = primaryUser.following.includes(user.id) ? 'lnr-checkmark-circle' : 'lnr-plus-circle';
