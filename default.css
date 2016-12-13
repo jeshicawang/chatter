@@ -117,22 +117,26 @@ p { margin: 0; }
   width: 40%;
 }
 
-#right-nav { text-align: center; }
+#right-nav {
+  text-align: right;
+}
 
 .navigation {
-  display: table;
+  display: inline-table;
   position: relative;
-  float: left;
-  margin-right: 20px;
   height: 34px;
   width: 34px;
   border-radius: 50%;
   padding: 6px;
 }
 
+#left-nav .navigation {
+  float: left;
+  margin-right: 20px;
+}
+
 #right-nav .navigation {
-  float: right;
-  margin-right: 0;
+  margin-left: 20px;
 }
 
 #header .lnr {
