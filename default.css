@@ -17,11 +17,16 @@ button {
   font-size: 14px;
 }
 
-button:hover {
-  outline: none;
+#header button {
   color: #fff;
-  background-color: #6d94b6;
-  border-color: #6d94b6;
+  background-color: rgba(255,255,255,.2);
+  border: 0;
+}
+
+#header button:hover {
+  outline: none;
+  color: #81a9ca;
+  background-color: rgba(255,255,255,.7);
 }
 
 button:focus { outline: none; }
@@ -48,7 +53,7 @@ h1 {
   margin: 0;
   font-size: 30px;
   font-family: 'Scope One', serif;
-  color: #81a9ca;
+  color: #fff;
 }
 
 #description h2 {
@@ -77,11 +82,6 @@ h3 {
   border-bottom: 4px solid #f2f6f9;
 }
 
-#left h3 {
-  color: #fff;
-  border-color: #93b5d2;
-}
-
 p { margin: 0; }
 
 #header {
@@ -90,16 +90,20 @@ p { margin: 0; }
   top: 0;
   width: 100%;
   box-sizing: border-box;
-  padding: 2px 20px;
-  background-color: #fff;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  background-color: #81a9ca;
 }
 
 #header-content {
   position: relative;
   display: table;
-  width: 100%;
-  min-width: 760px;
-  max-width: 1200px;
+  box-sizing: border-box;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 95%;
+  min-width: 620px;
+  max-width: 1500px;
   margin: auto;
 }
 
@@ -132,7 +136,6 @@ p { margin: 0; }
 }
 
 #header .lnr {
-  display: table-cell;
   font-size: 20px;
   font-weight: bold;
 }
@@ -154,7 +157,7 @@ p { margin: 0; }
   z-index: 100;
   top: 100%;
   left: 50%;
-  transform: translate(-50%,7px);
+  transform: translate(-50%,6px);
 }
 
 .tooltip .tooltip-text::after {
@@ -177,28 +180,39 @@ p { margin: 0; }
   margin-top: 2px;
 }
 
+#search ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: #fff;
+  opacity: .75;
+}
+
 #search #search-input {
   float: left;
   width: calc(100% - 41px);
   height: 30px;
   padding: 4px 4px 4px 10px;
+  border: 0;
   border-radius: 15px 0 0 15px;
-  border-right: 0;
   white-space: nowrap;
   overflow: hidden;
+  color: #fff;
+  background-color: rgba(255,255,255,.2);
+  border-color: rgba(255,255,255,0);
 }
 
 #search-button {
   display: table;
   float: left;
-  height: 28px;
+  height: 30px;
   width: 20px;
   border-radius: 0 15px 15px 0;
-  border-left: 0;
   box-sizing: content-box;
   padding: 0;
   padding-left: 10px;
   padding-right: 10px;
+}
+
+#search-button .lnr {
+  vertical-align: middle;
 }
 
 #search #results {
@@ -206,17 +220,15 @@ p { margin: 0; }
   position: absolute;
   top: 36px;
   left: 54px;
-  width: calc(50% + 38px);
+  width: calc(50% + 39px);
   background-color: #fff;
-  border: 1px solid #f1f1f1;
-  border-top: 0;
   border-radius: 0 0 15px 15px;
 }
 
 #content {
   display: table;
   margin: auto;
-  width: 100%;
+  width: 95%;
   min-width: 1024px;
   max-width: 1500px;
   height: 100vh;
@@ -231,17 +243,18 @@ p { margin: 0; }
   padding: 20px;
 }
 
-#left {
+#left,
+#right {
   width: 22%;
-  background-color: #81a9ca;
-  color: #d9e5ef;
 }
-
-#right { width: 22%; }
 
 #center {
   width: 56%;
   background-color: #f2eee8;
+}
+
+#user-info {
+  padding: 20px 10px;
 }
 
 #user-info .photo {
@@ -254,19 +267,18 @@ p { margin: 0; }
 
 .photo { border-radius: 50%; }
 
-#user-info #name { color: #fff; }
-
 #user-info #username { margin-bottom: 15px; }
 
-#user-info #about-me { margin-bottom: 15px; }
-
-#user-info #follow,
-#user-info #edit-profile,
-#user-info #save {
+#user-info button {
   width: 70%;
   border: 0;
   color: #fff;
-  background-color: #6d94b6;
+  background-color: #b4cbde;
+  margin-top: 15px;
+}
+
+#user-info button:hover {
+  background-color: #a2bfd6;
 }
 
 .field {
@@ -328,6 +340,10 @@ label span {
   font-size: 20px;
 }
 
+#user-info .lnr-camera {
+  color: rgba(255,255,255,.5);
+}
+
 #editor #check,
 #editor #cross { visibility: hidden; }
 
@@ -339,10 +355,7 @@ label span {
 
 #bio.field { height: 90px; }
 
-#user-info #error-msg {
-  height: 16px;
-  margin-bottom: 20px;
-}
+#user-info #error-msg { height: 16px; }
 
 .field div { background-color: #fff; }
 
@@ -372,7 +385,7 @@ label span {
 #bio textarea { border-bottom: 0; }
 
 #interactions {
-  margin-top: 60px;
+  margin-top: 20px;
   text-align: left;
 }
 
@@ -408,7 +421,7 @@ label span {
 
 #left .hashtag,
 #left .hashtag:visited,
-#interactions span:hover { color: #fff; }
+#interactions .hashtag span:hover { color: #999; }
 
 #interactions .more:hover { color: #d9e5ef; }
 
@@ -461,6 +474,12 @@ label span {
 #post-button {
   width: 50px;
   height: 32px;
+}
+
+#post-button:hover {
+  color: #fff;
+  background-color: #b4cbde;
+  border-color: #b4cbde;
 }
 
 #updates,
@@ -546,6 +565,7 @@ label span {
 }
 
 .update .like:hover {
+  color: #fff;
   background-color: #c3878a;
   border-color: #fff;
 }
@@ -595,6 +615,12 @@ label span {
 #list p { pointer-events: none; }
 
 .user .stat { color: #81a9ca; }
+
+#trending,
+#suggestions,
+#interactions {
+  padding: 10px;
+}
 
 #trending {
   text-align: left;
