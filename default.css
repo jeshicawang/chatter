@@ -1,5 +1,4 @@
 body {
-  min-width: 1024px;
   margin: 0;
   text-align: center;
   color: #353535;
@@ -28,7 +27,7 @@ button:hover {
 button:focus { outline: none; }
 
 textarea,
-input {
+input[type="text"] {
   resize: none;
   box-sizing: border-box;
   border: 1px solid #f1f1f1;
@@ -39,7 +38,7 @@ input {
 }
 
 textarea:focus,
-input:focus {
+input[type="text"]:focus {
   outline: none;
 }
 
@@ -86,15 +85,22 @@ h3 {
 p { margin: 0; }
 
 #header {
-  display: table;
   position: fixed;
   z-index: 99;
   top: 0;
   width: 100%;
-  min-width: 1024px;
   box-sizing: border-box;
   padding: 2px 20px;
   background-color: #fff;
+}
+
+#header-content {
+  position: relative;
+  display: table;
+  width: 100%;
+  min-width: 760px;
+  max-width: 1200px;
+  margin: auto;
 }
 
 .shadow { box-shadow: 0 0 2px #d6d6d6; }
@@ -209,7 +215,10 @@ p { margin: 0; }
 
 #content {
   display: table;
+  margin: auto;
   width: 100%;
+  min-width: 1024px;
+  max-width: 1500px;
   height: 100vh;
   padding-top: 46px;
   box-sizing: border-box;
@@ -225,7 +234,7 @@ p { margin: 0; }
 #left {
   width: 22%;
   background-color: #81a9ca;
-  color: #fff;
+  color: #d9e5ef;
 }
 
 #right { width: 22%; }
@@ -244,6 +253,8 @@ p { margin: 0; }
 }
 
 .photo { border-radius: 50%; }
+
+#user-info #name { color: #fff; }
 
 #user-info #username { margin-bottom: 15px; }
 
@@ -369,7 +380,6 @@ label span {
   position: relative;
   line-height: 22px;
   margin-left: 25px;
-  color: #d9e5ef;
 }
 
 .interaction .lnr {
@@ -398,10 +408,11 @@ label span {
 
 #left .hashtag,
 #left .hashtag:visited,
-#left span:hover,
-#interactions .more:hover { color: #fff; }
+#interactions span:hover { color: #fff; }
 
-#interactions .no-more:hover { color: #a5c2d9; }
+#interactions .more:hover { color: #d9e5ef; }
+
+#interactions .all:hover { color: #a5c2d9; }
 
 #stats {
   display: table;
@@ -684,8 +695,11 @@ label span {
 #updates .name:hover,
 #updates .username:hover { color: #81a9ca; }
 
+a,
 button,
 label,
+.photo,
+#description #name,
 #list .user,
 .result,
 #content .name,
