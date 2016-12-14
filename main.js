@@ -2,6 +2,7 @@
 
 var users = [ { id: 0,
                 username: 'jwang',
+                password: 'wanj',
                 displayName: 'Jessica Wang',
                 profilePic: 'images/jwang.jpg',
                 bio: 'Coffee lover. Dancer. Developer;)',
@@ -12,6 +13,7 @@ var users = [ { id: 0,
                 interactions: [0, 1, 2, 15, 16, 17] },
               { id: 1,
                 username: 'biagi',
+                password: 'rodolfo',
                 displayName: 'Rodolfo Biagi',
                 profilePic: 'images/biagi.jpg',
                 bio: 'An Argentine Tango musician who started his musical career by playing background music for silent movies.',
@@ -22,6 +24,7 @@ var users = [ { id: 0,
                 interactions: [8] },
               { id: 2,
                 username: 'varela',
+                password: 'hector',
                 displayName: 'Hector Varela',
                 profilePic: 'images/varela.jpg',
                 bio: 'Varela was a musician criticized by the innovative players, but loved by the fans of dancing and popular tango.',
@@ -32,6 +35,7 @@ var users = [ { id: 0,
                 interactions: [9] },
               { id: 3,
                 username: 'donato',
+                password: 'edgardo',
                 displayName: 'Edgardo Donato',
                 profilePic: 'images/donato.jpg',
                 bio: 'Donato was a tango composer and orchestra leader, born in Buenos Aires, Argentina, raised from a young age and musically trained in Montevideo, Uruguay.',
@@ -42,6 +46,7 @@ var users = [ { id: 0,
                 interactions: [10, 18, 19] },
               { id: 4,
                 username: 'diaz',
+                password: 'hugo',
                 displayName: 'Hugo Diaz',
                 profilePic: 'images/diaz.jpg',
                 bio: 'Víctor Hugo Díaz was a tango, folklore and jazz harmonicist.',
@@ -52,6 +57,7 @@ var users = [ { id: 0,
                 interactions: [3, 4, 5, 6, 7, 11] },
               { id: 5,
                 username: 'dagostino',
+                password: 'angel',
                 displayName: 'Angel D\'Agostino',
                 profilePic: 'images/dagostino.jpg',
                 bio: 'I am milonguero, I always was, in the best sense of the word.',
@@ -62,6 +68,7 @@ var users = [ { id: 0,
                 interactions: [12] },
               { id: 6,
                 username: 'darienzo',
+                password: 'juan',
                 displayName: 'Juan D\'Arienzo',
                 profilePic: 'images/darienzo.jpg',
                 bio: 'Juan D\'Arienzo was an Argentine tango musician, also known as \"El Rey del Compás\".',
@@ -72,6 +79,7 @@ var users = [ { id: 0,
                 interactions: [13] },
               { id: 7,
                 username: 'demare',
+                password: 'lucio',
                 displayName: 'Lucio Demare',
                 profilePic: 'images/demare.jpg',
                 bio: 'Lucio Demare was an Argentine composer who worked on a number of film scores.',
@@ -134,7 +142,7 @@ var interactions = [ { userId: 0, activity: 'like', post: '6' },
                      { userId: 3, activity: 'like', post: '12' },
                      { userId: 3, activity: 'like', post: '7' } ];
 
-var primaryUser = users[0];
+var primaryUser;
 var currentlyViewing = primaryUser;
 var viewing = null;
 var interactionsDisplayed = 10;
@@ -249,11 +257,33 @@ function removeElements(action, ids) {
   });
 }
 
+// Called when login link is clicked on the landing page.
+function login() {
+  var username = document.getElementById('username-input').value;
+  if (!username.trim()) return;
+  var user = users.find( user => (user.username === username) );
+  if (!user) return;
+  var password = document.getElementById('password-input').value;
+  if (!password.trim()) return;
+  if (user.password !== password) return;
+  primaryUser = user;
+  document.getElementById('username-input').value = '';
+  document.getElementById('password-input').value = '';
+  goHome();
+  right.appendChild(trending());
+  right.appendChild(suggestions());
+  toggleVisibility('header');
+  toggleVisibility('content');
+  toggleVisibility('landing');
+}
+
 // Called when logout button is clicked. User is taken to the landing page where they can log in or create a new account.
 function logout() {
   toggleVisibility('header');
   toggleVisibility('content');
   toggleVisibility('landing');
+  removeElements('remove', ['trending', 'suggestions']);
+  primaryUser = null;
 }
 
 function toggleVisibility(id) {
@@ -838,12 +868,9 @@ function hideResults(event) {
   document.getElementById('search-button').style.borderBottomRightRadius = '15px';
 }
 
-// Initializes webpage to load with the home page + 'Trending' section and 'Who to Follow' section
-goHome();
-right.appendChild(trending());
-right.appendChild(suggestions());
-
 // Adds event listeners to the header (navigation buttons and the search bar)
+document.getElementById('login-link').addEventListener('click', login);
+document.getElementById('password-input').addEventListener('keyup', event => { event.keyCode === 13 ? login() : null } );
 document.getElementById('home-button').addEventListener('click', goHome);
 document.getElementById('search-button').addEventListener('click', checkSearchInput);
 document.getElementById('search-input').addEventListener('keyup', function(e) { keyboardNav(e) });

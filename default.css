@@ -222,6 +222,11 @@ p { margin: 0; }
   font-weight: bold;
 }
 
+#header #logout-button {
+  padding-top: 7px;
+  padding-left: 8px;
+}
+
 .tooltip .tooltip-text {
   visibility: hidden;
   position: absolute;
