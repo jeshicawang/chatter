@@ -7,6 +7,81 @@ body {
   font-weight: 300;
 }
 
+.visible { visibility: visible; }
+
+.hidden { visibility: hidden; }
+
+#landing {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url(images/background.jpg);
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+}
+
+#landing .layer {
+  position: absolute;
+  width: inherit;
+  height: inherit;
+  display: table;
+  background-color: rgba(0,0,0,.6);
+}
+
+#landing-content {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+#landing h1 {
+  color: #81a9ca;
+  margin: 0;
+  font-size: 64px;
+  font-weight: bold;
+}
+
+#landing h2 {
+  margin-top: -10px;
+  margin-bottom: 35px;
+  font-weight: normal;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: .7;
+}
+
+#landing-content input {
+  display: block;
+  margin: auto;
+  margin-bottom: 25px;
+  padding: 5px 20px;
+  border: 1px solid transparent;
+  background-color: rgba(255,255,255,.2);
+  color: #fff;
+  font-family: 'Scope One', serif;
+  font-style: normal;
+  text-align: center;
+  font-size: 18px;
+}
+
+#landing-content input:focus {
+  outline: none;
+  border: 1px solid rgba(255,255,255,.3);
+}
+
+#landing #login-link {
+  text-transform: uppercase;
+  text-decoration: none;
+  letter-spacing: 1.5px;
+  opacity: .8;
+  color: #fff;
+}
+
+#landing #login-link:hover {
+  opacity: 1;
+}
+
 button {
   padding: 3px;
   background-color: #fff;
@@ -48,10 +123,6 @@ input[type="text"]:focus {
 }
 
 h1 {
-  display: table-cell;
-  width: 20%;
-  margin: 0;
-  font-size: 30px;
   font-family: 'Scope One', serif;
   color: #fff;
 }
@@ -109,6 +180,13 @@ p { margin: 0; }
 
 .shadow { box-shadow: 0 0 2px #d6d6d6; }
 
+#header h1 {
+  display: table-cell;
+  width: 20%;
+  margin: 0;
+  font-size: 30px;
+}
+
 #left-nav,
 #right-nav {
   position: relative;
@@ -117,27 +195,36 @@ p { margin: 0; }
   width: 40%;
 }
 
-#right-nav { text-align: center; }
+#right-nav {
+  text-align: right;
+}
 
 .navigation {
-  display: table;
+  display: inline-table;
   position: relative;
-  float: left;
-  margin-right: 20px;
   height: 34px;
   width: 34px;
   border-radius: 50%;
   padding: 6px;
 }
 
+#left-nav .navigation {
+  float: left;
+  margin-right: 20px;
+}
+
 #right-nav .navigation {
-  float: right;
-  margin-right: 0;
+  margin-left: 20px;
 }
 
 #header .lnr {
   font-size: 20px;
   font-weight: bold;
+}
+
+#header #logout-button {
+  padding-top: 7px;
+  padding-left: 8px;
 }
 
 .tooltip .tooltip-text {
