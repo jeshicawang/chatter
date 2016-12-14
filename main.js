@@ -165,7 +165,7 @@ function createElement(tag, attributes, children, eventListener) {
     newElement.addEventListener(eventListener[0], eventListener[1]);
   if (!children && children !== 0) return newElement;
   if (!(children instanceof Element) && !(children instanceof Array)) {
-    newElement.appendChild(document.createTextNode(children));
+    newElement.textContent = children;
     return newElement;
   }
   if (!(children instanceof Array))
