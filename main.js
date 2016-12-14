@@ -281,7 +281,7 @@ function logout() {
   toggleVisibility('header');
   toggleVisibility('content');
   toggleVisibility('landing');
-  removeElements('remove', ['trending', 'suggestions']);
+  removeElements('empty', ['left', 'center', 'right']);
   primaryUser = null;
 }
 
