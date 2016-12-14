@@ -164,26 +164,18 @@ function createElement(tag, attributes, children, eventListener) {
   if(eventListener)
     newElement.addEventListener(eventListener[0], eventListener[1]);
   if (!children && children !== 0) return newElement;
-  if (!(children instanceof Element) && !(children instanceof Array)) {
-    newElement.textContent = children;
-    return newElement;
-  }
   if (!(children instanceof Array))
     children = [children];
-  function appendChildren(c) {
-    c.forEach( function(child) {
-      if (!(child instanceof Element) && !(child instanceof Array)) {
-        newElement.appendChild(document.createTextNode(child));
-        return;
-      }
-      if (child instanceof Array)
-        appendChildren(child);
-      else
-        newElement.appendChild(child);
-    });
-  }
-  appendChildren(children);
-  return newElement;
+  return children.reduce( (children, child) => {
+    return children.concat(child);
+  },[]).map( child => {
+    if (!(child instanceof Element))
+      child = document.createTextNode(child);
+    return child;
+  }).reduce( (element, child) => {
+    element.appendChild(child);
+    return element;
+  }, newElement);
 }
 
 // Displays the user profile of the given user.
