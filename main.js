@@ -249,6 +249,18 @@ function removeElements(action, ids) {
   });
 }
 
+// Called when logout button is clicked. User is taken to the landing page where they can log in or create a new account.
+function logout() {
+  toggleVisibility('header');
+  toggleVisibility('content');
+  toggleVisibility('landing');
+}
+
+function toggleVisibility(id) {
+  document.getElementById(id).classList.toggle("visible");
+  document.getElementById(id).classList.toggle("hidden");
+}
+
 // Displays the home page w/ updates from all users the primary user is following
 function goHome() {
   removeElements('empty', ['left', 'center']);
@@ -833,8 +845,9 @@ right.appendChild(suggestions());
 
 // Adds event listeners to the header (navigation buttons and the search bar)
 document.getElementById('home-button').addEventListener('click', goHome);
-document.getElementById('profile-button').addEventListener('click', function() { displayProfile(primaryUser) });
 document.getElementById('search-button').addEventListener('click', checkSearchInput);
 document.getElementById('search-input').addEventListener('keyup', function(e) { keyboardNav(e) });
 document.getElementById('search-input').addEventListener('focus', displayResults);
+document.getElementById('profile-button').addEventListener('click', function() { displayProfile(primaryUser) });
+document.getElementById('logout-button').addEventListener('click', logout);
 document.getElementById('body').addEventListener('click', function(e) { hideResults(e) });

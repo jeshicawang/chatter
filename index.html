@@ -8,14 +8,23 @@
 	   <link rel="stylesheet" href="default.css">
   </head>
   <body id="body">
-    <div id="header" class="shadow"><div id="header-content">
+    <div id="landing" class="visible">
+      <div class="layer"><div id="landing-content">
+        <h1>chatter</h1>
+        <h2>a twitter clone</h2>
+        <input id="username-input" type="text" placeholder="username">
+        <input id="password-input" type="password" placeholder="password">
+        <a id="login-link" href="#">login</a>
+      </div></div>
+    </div>
+    <div id="header" class="hidden shadow"><div id="header-content">
       <div id="left-nav">
         <button id="home-button" class="navigation tooltip">
           <span class="tooltip-text">Home</span>
           <span class="lnr lnr-home"></span>
         </button>
         <div id="search">
-          <input id="search-input" type="text" placeholder="Search">
+          <input id="search-input" type="text" placeholder="Search for a user">
           <button id="search-button"><span class="lnr lnr-magnifier"></span></button>
           <div id="results" class="shadow"></div>
         </div>
@@ -32,7 +41,7 @@
         </button>
       </div>
     </div></div>
-    <div id="content">
+    <div id="content" class="hidden">
       <div id="left" class="container"></div>
       <div id="center" class="container"></div>
       <div id="right" class="container"></div>
