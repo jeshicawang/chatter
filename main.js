@@ -90,21 +90,21 @@ var users = [ { id: 0,
                 interactions: [14] }
 ];
 
-var updates = { 0: { userId: 2, timestamp: newMoment('7:00AM 11/21/16'), post: 'Es la historia de un amor, como no hay otro igual. Que me hizo comprender, todo el bien todo el mal, que le dio luz a mi vida, apagandola después. ¡Ay, qué vida tan oscura, corazón, sin tu amor no viviré! #historiadeunamor #tango', likes: [] },
-                1: { userId: 0, timestamp: newMoment('9:00AM 11/22/16'), post: 'Starting my weekday by going to coding class!', likes: [4] },
-                2: { userId: 0, timestamp: newMoment('11:30AM 11/22/16'), post: 'Off to my lunch break! Maybe I\'ll go across the street?', likes: [4] },
-                3: { userId: 1, timestamp: newMoment('11:45AM 11/22/16'), post: 'Soñemos, que los dos estamos libres. Soñemos, en la gloria de este amor. Soñemos, que ya nada nos separa, y que somos cual dos almas, que nacieron para amar. #sonemos #hugoduval #tango', likes: [] },
-                4: { userId: 1, timestamp: newMoment('11:55AM 11/22/16'), post: 'La soledad, que me envuelve el corazón, va encendiendo en mi alma, el fuego de tu amor lejano. En las brumas de tu olvido, viaja mi ilusión, gritando tu nombre en vano. #caricias #hugoduval #tango', likes: [] },
-                5: { userId: 1, timestamp: newMoment('12:00PM 11/22/16'), post: 'Todo es amor, la brisa y tú, jugando en el rumor, y el ruiseñor, cantando en una flor, buscando amor, amor. #todoesamor #hugoduval #tango', likes: [] },
-                6: { userId: 0, timestamp: newMoment('12:15PM 11/22/16'), post: '...and lunch is over, so back to class.', likes: [0, 4] },
-                7: { userId: 2, timestamp: newMoment('2:00PM 11/22/16'), post: 'No me hablas tesoro mio, No me hablas ni me has mirado, Fueron tres años mi vida, Tres años muy lejos de tu corazon. #fuerontresanos #tango', likes: [3] },
-                8: { userId: 0, timestamp: newMoment('4:30PM 11/22/16'), post: 'Class just ended.', likes: [0, 4] },
-                9: { userId: 0, timestamp: newMoment('5:00PM 11/22/16'), post: 'I\'m going home for the day!', likes: [0, 4] },
-                10: { userId: 3, timestamp: moment(), post: 'Sacále punta a esta milonga, que ya empezó. Seguí esos fueyes que rezongan, del corazón. Y las pebetas que han venido, del Club Fulgor. El tango requiebra la vida, Y en sus notas desparrama, su amor. #sacalepunta #milonga', likes: [] },
-                11: { userId: 3, timestamp: moment(), post: '¡Carnaval de mi barrio!, donde todo es amor, cascabeles de risa, matizando el dolor, ¡carnaval de mi barrio!, pedacito de sol, con nostalgias de luna, y canción de farol. #carnavaldemibarrio #tango', likes: [] },
-                12: { userId: 5, timestamp: moment(), post: 'Ahora no me conocés… ¡me borro tu ingratitud!… Aunque dejés mi alma trunca, no podrás olvidar nunca, lo de nuestra juventud… #ahoranomeconoces #angelvargas #tango', likes: [3] },
-                13: { userId: 5, timestamp: moment(), post:  'Mañanita arrabalera, Sin taitas por las veredas, Ni minas en el balcón, Tus faroles apagados. #adiosarrabal #angelvargas #tango', likes: [] },
-                14: { userId: 1, timestamp: moment(), post: 'Ya sé que me has olvidado, ya sé que te fuiste lejos. Ya sé que con mis consejos, no te voy a enderezar. #campoafuera #milonga', likes: [] } }
+var updates = [ { id: 0, userId: 2, timestamp: newMoment('7:00AM 11/21/16'), post: 'Es la historia de un amor, como no hay otro igual. Que me hizo comprender, todo el bien todo el mal, que le dio luz a mi vida, apagandola después. ¡Ay, qué vida tan oscura, corazón, sin tu amor no viviré! #historiadeunamor #tango', likes: [] },
+                { id: 1, userId: 0, timestamp: newMoment('9:00AM 11/22/16'), post: 'Starting my weekday by going to coding class!', likes: [4] },
+                { id: 2, userId: 0, timestamp: newMoment('11:30AM 11/22/16'), post: 'Off to my lunch break! Maybe I\'ll go across the street?', likes: [4] },
+                { id: 3, userId: 1, timestamp: newMoment('11:45AM 11/22/16'), post: 'Soñemos, que los dos estamos libres. Soñemos, en la gloria de este amor. Soñemos, que ya nada nos separa, y que somos cual dos almas, que nacieron para amar. #sonemos #hugoduval #tango', likes: [] },
+                { id: 4, userId: 1, timestamp: newMoment('11:55AM 11/22/16'), post: 'La soledad, que me envuelve el corazón, va encendiendo en mi alma, el fuego de tu amor lejano. En las brumas de tu olvido, viaja mi ilusión, gritando tu nombre en vano. #caricias #hugoduval #tango', likes: [] },
+                { id: 5, userId: 1, timestamp: newMoment('12:00PM 11/22/16'), post: 'Todo es amor, la brisa y tú, jugando en el rumor, y el ruiseñor, cantando en una flor, buscando amor, amor. #todoesamor #hugoduval #tango', likes: [] },
+                { id: 6, userId: 0, timestamp: newMoment('12:15PM 11/22/16'), post: '...and lunch is over, so back to class.', likes: [0, 4] },
+                { id: 7, userId: 2, timestamp: newMoment('2:00PM 11/22/16'), post: 'No me hablas tesoro mio, No me hablas ni me has mirado, Fueron tres años mi vida, Tres años muy lejos de tu corazon. #fuerontresanos #tango', likes: [3] },
+                { id: 8, userId: 0, timestamp: newMoment('4:30PM 11/22/16'), post: 'Class just ended.', likes: [0, 4] },
+                { id: 9, userId: 0, timestamp: newMoment('5:00PM 11/22/16'), post: 'I\'m going home for the day!', likes: [0, 4] },
+                { id: 10, userId: 3, timestamp: moment(), post: 'Sacále punta a esta milonga, que ya empezó. Seguí esos fueyes que rezongan, del corazón. Y las pebetas que han venido, del Club Fulgor. El tango requiebra la vida, Y en sus notas desparrama, su amor. #sacalepunta #milonga', likes: [] },
+                { id: 11, userId: 3, timestamp: moment(), post: '¡Carnaval de mi barrio!, donde todo es amor, cascabeles de risa, matizando el dolor, ¡carnaval de mi barrio!, pedacito de sol, con nostalgias de luna, y canción de farol. #carnavaldemibarrio #tango', likes: [] },
+                { id: 12, userId: 5, timestamp: moment(), post: 'Ahora no me conocés… ¡me borro tu ingratitud!… Aunque dejés mi alma trunca, no podrás olvidar nunca, lo de nuestra juventud… #ahoranomeconoces #angelvargas #tango', likes: [3] },
+                { id: 13, userId: 5, timestamp: moment(), post:  'Mañanita arrabalera, Sin taitas por las veredas, Ni minas en el balcón, Tus faroles apagados. #adiosarrabal #angelvargas #tango', likes: [] },
+                { id: 14, userId: 1, timestamp: moment(), post: 'Ya sé que me has olvidado, ya sé que te fuiste lejos. Ya sé que con mis consejos, no te voy a enderezar. #campoafuera #milonga', likes: [] } ]
 
 var hashtags = { adiosarrabal: [13],
                  ahoranomeconoces: [12],
@@ -265,29 +265,29 @@ function login() {
   var user = users.find( user => (user.username === username) );
   if (!user) return;
   if (user.password !== password) return;
-  primaryUser = user;
   document.getElementById('username-input').value = '';
   document.getElementById('password-input').value = '';
+  primaryUser = user;
   right.appendChild(trending());
   right.appendChild(suggestions());
   goHome();
-  toggleVisibility('header');
-  toggleVisibility('content');
-  toggleVisibility('landing');
+  toggleVisibility(['header', 'content', 'landing']);
 }
 
 // Called when logout button is clicked. User is taken to the landing page where they can log in or create a new account.
 function logout() {
-  toggleVisibility('header');
-  toggleVisibility('content');
-  toggleVisibility('landing');
+  toggleVisibility(['header', 'content', 'landing']);
   removeElements('empty', ['left', 'center', 'right']);
   primaryUser = null;
 }
 
-function toggleVisibility(id) {
-  document.getElementById(id).classList.toggle("visible");
-  document.getElementById(id).classList.toggle("hidden");
+function toggleVisibility(ids) {
+  if (!(ids instanceof Array))
+    ids = [ids];
+  ids.forEach( id => {
+    document.getElementById(id).classList.toggle("visible");
+    document.getElementById(id).classList.toggle("hidden");
+  });
 }
 
 // Displays the home page w/ updates from all users the primary user is following
@@ -875,3 +875,10 @@ document.getElementById('search-input').addEventListener('focus', displayResults
 document.getElementById('profile-button').addEventListener('click', function() { displayProfile(primaryUser) });
 document.getElementById('logout-button').addEventListener('click', logout);
 document.getElementById('body').addEventListener('click', function(e) { hideResults(e) });
+
+// Bypass login page. (for testing purposes)
+primaryUser = users[0];
+right.appendChild(trending());
+right.appendChild(suggestions());
+goHome();
+toggleVisibility(['header', 'content', 'landing']);
