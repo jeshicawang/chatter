@@ -260,18 +260,17 @@ function removeElements(action, ids) {
 // Called when login link is clicked on the landing page.
 function login() {
   var username = document.getElementById('username-input').value;
-  if (!username.trim()) return;
+  var password = document.getElementById('password-input').value;
+  if (!username.trim() || !password.trim()) return;
   var user = users.find( user => (user.username === username) );
   if (!user) return;
-  var password = document.getElementById('password-input').value;
-  if (!password.trim()) return;
   if (user.password !== password) return;
   primaryUser = user;
   document.getElementById('username-input').value = '';
   document.getElementById('password-input').value = '';
-  goHome();
   right.appendChild(trending());
   right.appendChild(suggestions());
+  goHome();
   toggleVisibility('header');
   toggleVisibility('content');
   toggleVisibility('landing');
@@ -549,9 +548,7 @@ function addUpdate() {
     return;
   }
   refreshStats(primaryUser);
-  updatesContainer.insertBefore(createElement('div', { class: 'update'}, getUpdateElements(primaryUser, newUpdateId)), updatesContainer.firstChild);
-  if (primaryUser.updatesCount === 1)
-    updatesContainer.removeChild(updatesContainer.lastChild);
+  document.getElementById(viewing).click();
 }
 
 // Checks the given post for hashtags and adds them to the data model.
