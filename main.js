@@ -189,7 +189,7 @@ function createElement(tag, attributes, children, eventListener) {
 // Displays the user profile of the given user.
 function displayProfile(user) {
   if (!user) return;
-  removeElements('empty', ['left', 'center'])
+  modifyDocument('empty', ['left', 'center'])
   currentlyViewing = user;
   left.appendChild(userInfo(user));
   left.appendChild(getInteractions(user, user.interactions, 0));
@@ -230,7 +230,7 @@ function follow(id) {
     document.getElementById(viewing).click();
   }
   if (currentlyViewing === primaryUser) {
-    removeElements('remove', 'interactions');
+    modifyDocument('remove', 'interactions');
     left.appendChild(getInteractions(primaryUser, primaryUser.interactions, 0));
     return;
   }
@@ -239,25 +239,25 @@ function follow(id) {
 }
 
 // Either empties or removes elements of the specific ids from the DOM
-function removeElements(action, ids) {
-  if (! (ids instanceof Array))
+function modifyDocument(action, ids) {
+  function remove(element) {
+    element.parentElement.removeChild(element);
+  }
+  function empty(element) {
+    while(element.firstChild)
+      element.removeChild(element.firstChild);
+  }
+  const doAction = (action === 'remove') ? remove : empty;
+  if (!(ids instanceof Array))
     ids = [ids];
   ids.forEach(function (id) {
-    var element = document.getElementById(id);
+    const element = document.getElementById(id);
     if (!element) return;
-    switch(action) {
-      case 'remove':
-        element.parentElement.removeChild(element);
-        break;
-      case 'empty':
-        while(element.firstChild)
-          element.removeChild(element.firstChild);
-        break;
-    }
+    doAction(element);
   });
 }
 
-// Called when login link is clicked on the landing page.
+// Called when login link is clicked on the landing page. Checks for a username/password match to login.
 function login() {
   var username = document.getElementById('username-input').value;
   var password = document.getElementById('password-input').value;
@@ -277,10 +277,11 @@ function login() {
 // Called when logout button is clicked. User is taken to the landing page where they can log in or create a new account.
 function logout() {
   toggleVisibility(['header', 'content', 'landing']);
-  removeElements('empty', ['left', 'center', 'right']);
+  modifyDocument('empty', ['left', 'center', 'right']);
   primaryUser = null;
 }
 
+// Takes an array of element ids and toggle's each id's visibility
 function toggleVisibility(ids) {
   if (!(ids instanceof Array))
     ids = [ids];
@@ -292,7 +293,7 @@ function toggleVisibility(ids) {
 
 // Displays the home page w/ updates from all users the primary user is following
 function goHome() {
-  removeElements('empty', ['left', 'center']);
+  modifyDocument('empty', ['left', 'center']);
   currentlyViewing = null;
   left.appendChild(userInfo(primaryUser));
   left.appendChild(getInteractions(currentlyViewing, interactions, 0));
@@ -337,7 +338,7 @@ function userInfo(user) {
 
 // Displays the profile editor where the primary user can edit his/her user info.
 function editProfile() {
-  removeElements('remove', ['description', 'edit-profile']);
+  modifyDocument('remove', ['description', 'edit-profile']);
   var userInfo = document.getElementById('user-info');
   userInfo.appendChild(createElement('input', { id: 'image-upload', type: 'file' }, null, ['change', changeProfilePic]));
   userInfo.appendChild(createElement('label', { for: 'image-upload' }, createElement('span', { class: 'lnr lnr-camera' })));
@@ -469,14 +470,14 @@ function getInteractions(user, userInteractions, extra) {
 
 // Minimizes the interactions div and returns the display to 10 interactions
 function minimizeInteractions() {
-  removeElements('remove', 'interactions');
+  modifyDocument('remove', 'interactions');
   interactionsDisplayed = 10;
   left.appendChild(getInteractions(currentlyViewing, currentlyViewing ? currentlyViewing.interactions : interactions, 0));
 }
 
 // Displays up to 5 more interactions in the interactions div
 function displayMoreInteractions() {
-  removeElements('remove', 'interactions');
+  modifyDocument('remove', 'interactions');
   left.appendChild(getInteractions(currentlyViewing, currentlyViewing ? currentlyViewing.interactions : interactions, 5));
   interactionsDisplayed += 5;
 }
@@ -499,13 +500,13 @@ function stats(user) {
 
 // Refreshes #stats element on profile. Called when a new user is followed/unfollowed, new post, etc...
 function refreshStats() {
-  removeElements('remove', 'stats');
+  modifyDocument('remove', 'stats');
   center.insertBefore(stats(currentlyViewing), center.firstChild);
 }
 
 // Modifies content in center container to display posts, following, or followers. Called when stats is clicked.
 function displayCenterContent(event, user) {
-  removeElements('remove', ['hashtag', 'new-update', 'updates', 'list'])
+  modifyDocument('remove', ['hashtag', 'new-update', 'updates', 'list'])
   if (viewing) document.getElementById(viewing).style.borderColor = null;
   event.target.style.borderColor = '#81a9ca';
   switch (event.target) {
@@ -572,7 +573,7 @@ function addHashtags(post, id) {
     post = post.substring(pointer);
   }
   if (newHashtags) {
-    removeElements('remove', 'trending');
+    modifyDocument('remove', 'trending');
     right.insertBefore(trending(), document.getElementById('suggestions'));
   }
 }
@@ -661,11 +662,11 @@ function likePost(updateElement, postId) {
     primaryUser.interactions.splice(primaryUser.interactions.indexOf(indexToRemove), 1);
   }
   if (!currentlyViewing) {
-    removeElements('remove', 'interactions');
+    modifyDocument('remove', 'interactions');
     left.appendChild(getInteractions(currentlyViewing, interactions, 0));
   }
   if (currentlyViewing === primaryUser) {
-    removeElements('remove', 'interactions');
+    modifyDocument('remove', 'interactions');
     left.appendChild(getInteractions(primaryUser, primaryUser.interactions, 0));
   }
   updateElement.parentElement.lastChild.textContent = updates[postId].likes.length;
@@ -729,7 +730,7 @@ function trending() {
 
 // Displays a page for the given hashtag, and displays all updates containing that hashtag on the page.
 function viewHashtag(hashtag) {
-  removeElements('empty', ['center', 'left']);
+  modifyDocument('empty', ['center', 'left']);
   currentlyViewing = null;
   center.appendChild(createElement('h2', { id: 'hashtag', class: 'shadow' }, '#' + hashtag));
   center.appendChild(hashtagUpdates(hashtag));
