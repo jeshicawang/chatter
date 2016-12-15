@@ -13,37 +13,31 @@ body {
 
 #landing {
   position: absolute;
+  display: table;
   width: 100%;
   height: 100%;
-  background-image: url(images/background.jpg);
+  background-image: url(images/birds.jpg);
   background-size: cover;
   background-position: center;
   color: #fff;
 }
 
-#landing .layer {
-  position: absolute;
-  width: inherit;
-  height: inherit;
-  display: table;
-  background-color: rgba(0,0,0,.6);
-}
-
 #landing-content {
   display: table-cell;
   vertical-align: middle;
+  background-color: rgba(0,0,0,.1);
 }
 
 #landing h1 {
-  color: #81a9ca;
+  color: #fff;
   margin: 0;
-  font-size: 64px;
+  font-size: 56px;
   font-weight: bold;
 }
 
 #landing h2 {
   margin-top: -10px;
-  margin-bottom: 35px;
+  margin-bottom: 30px;
   font-weight: normal;
   font-size: 18px;
   text-transform: uppercase;
@@ -54,10 +48,10 @@ body {
 #landing-content input {
   display: block;
   margin: auto;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
   padding: 5px 20px;
+  background-color: rgba(255,255,255,.1);
   border: 1px solid transparent;
-  background-color: rgba(255,255,255,.2);
   color: #fff;
   font-family: 'Scope One', serif;
   font-style: normal;
@@ -66,11 +60,12 @@ body {
 }
 
 #landing-content input:focus {
+  border: 1px solid rgba(255,255,255,.4);
   outline: none;
-  border: 1px solid rgba(255,255,255,.3);
 }
 
 #landing #login-link {
+  margin-top: 25px;
   text-transform: uppercase;
   text-decoration: none;
   letter-spacing: 1.5px;
@@ -118,7 +113,7 @@ input[type="text"] {
 }
 
 textarea:focus,
-input[type="text"]:focus {
+#header input:focus {
   outline: none;
 }
 
@@ -267,9 +262,9 @@ p { margin: 0; }
   margin-top: 2px;
 }
 
-#search ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
   color: #fff;
-  opacity: .75;
+  opacity: .6;
 }
 
 #search #search-input {
