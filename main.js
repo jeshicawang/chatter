@@ -121,26 +121,26 @@ var hashtags = { adiosarrabal: [13],
                  tango: [0, 3, 4, 5, 7, 11, 12, 13],
                  todoesamor: [5] };
 
-var interactions = [ { userId: 0, activity: 'like', post: 6 },
-                     { userId: 0, activity: 'like', post: 8 },
-                     { userId: 0, activity: 'like', post: 9 },
-                     { userId: 4, activity: 'like', post: 1 },
-                     { userId: 4, activity: 'like', post: 2 },
-                     { userId: 4, activity: 'like', post: 6 },
-                     { userId: 4, activity: 'like', post: 8 },
-                     { userId: 4, activity: 'like', post: 9 },
-                     { userId: 1, activity: 'follow', user: 0 },
-                     { userId: 2, activity: 'follow', user: 0 },
-                     { userId: 3, activity: 'follow', user: 0 },
-                     { userId: 4, activity: 'follow', user: 0 },
-                     { userId: 5, activity: 'follow', user: 0 },
-                     { userId: 6, activity: 'follow', user: 0 },
-                     { userId: 7, activity: 'follow', user: 0 },
-                     { userId: 0, activity: 'follow', user: 3 },
-                     { userId: 0, activity: 'follow', user: 5 },
-                     { userId: 0, activity: 'follow', user: 1 },
-                     { userId: 3, activity: 'like', post: 12 },
-                     { userId: 3, activity: 'like', post: 7 } ];
+var interactions = [ { id: 0, userId: 0, activity: 'like', post: 6 },
+                     { id: 1, userId: 0, activity: 'like', post: 8 },
+                     { id: 2, userId: 0, activity: 'like', post: 9 },
+                     { id: 3, userId: 4, activity: 'like', post: 1 },
+                     { id: 4, userId: 4, activity: 'like', post: 2 },
+                     { id: 5, userId: 4, activity: 'like', post: 6 },
+                     { id: 6, userId: 4, activity: 'like', post: 8 },
+                     { id: 7, userId: 4, activity: 'like', post: 9 },
+                     { id: 8, userId: 1, activity: 'follow', user: 0 },
+                     { id: 9, userId: 2, activity: 'follow', user: 0 },
+                     { id: 10, userId: 3, activity: 'follow', user: 0 },
+                     { id: 11, userId: 4, activity: 'follow', user: 0 },
+                     { id: 12, userId: 5, activity: 'follow', user: 0 },
+                     { id: 13, userId: 6, activity: 'follow', user: 0 },
+                     { id: 14, userId: 7, activity: 'follow', user: 0 },
+                     { id: 15, userId: 0, activity: 'follow', user: 3 },
+                     { id: 16, userId: 0, activity: 'follow', user: 5 },
+                     { id: 17, userId: 0, activity: 'follow', user: 1 },
+                     { id: 18, userId: 3, activity: 'like', post: 12 },
+                     { id: 19, userId: 3, activity: 'like', post: 7 } ];
 
 var primaryUser;
 var currentlyViewing = primaryUser;
@@ -158,7 +158,10 @@ function loadData() {
     update.user = users[update.userId];
     delete update.userId;
   });
-  //
+  // Going through each user and replacing interactions array with array of references to the interactions instead of ids
+  users.forEach( user => {
+    user.interactions = user.interactions.map( id => interactions[id] );
+  });
 }
 
 // Takes a formatted time and returns a new Moment obj.
@@ -209,20 +212,21 @@ function follow(id) {
     suggestions[index].className = 'plus lnr lnr-checkmark-circle';
     primaryUser.following.unshift(id);
     users[id].followers.unshift(primaryUser.id);
-    primaryUser.interactions.push(interactions.length);
-    interactions.push( { userId: primaryUser.id, activity: 'follow', user: id } );
+    const newId = interactions.slice().pop().id + 1;
+    const newInteraction = { id: newId, userId: primaryUser.id, activity: 'follow', user: id };
+    interactions.push(newInteraction);
+    primaryUser.interactions.push(newInteraction);
   } else {
     suggestions[index].className = 'plus lnr lnr-plus-circle';
     index = primaryUser.following.indexOf(id);
     primaryUser.following.splice(index, 1);
     index = users[id].followers.indexOf(primaryUser.id);
     users[id].followers.splice(index, 1);
-    var indexToRemove = interactions.findIndex( interaction => {
-      if(!interaction) return;
-      return interaction['activity'] === 'follow' && interaction['user'] === id && interaction['userId'] == primaryUser.id;
-    });
-    interactions.splice(indexToRemove, 1, null);
-    primaryUser.interactions.splice(primaryUser.interactions.indexOf(indexToRemove), 1);
+    const interactionToRemove = interactions.find( ({activity, user, userId}) =>
+      (activity === 'follow' && user === id && userId == primaryUser.id)
+    );
+    interactions.splice(interactions.findIndex(interaction => (interaction === interactionToRemove)), 1);
+    primaryUser.interactions.splice(primaryUser.interactions.findIndex(interaction => (interaction === interactionToRemove)), 1);
   }
   if (!currentlyViewing) {
     goHome();
@@ -422,12 +426,12 @@ function saveProfile() {
 
 // 'Interactions' section: Returns #interactons element containing the interactions of the primary user + users he/she is following
 function getInteractions(user, userInteractions, extra) {
-  var interactionsArray = [];
-  var interaction = '';
+  let interactionsArray = [];
+  let interaction = '';
   if (user)
-    userInteractions.forEach( function(index) { interactionsArray.push(interactions[index]); });
+    interactionsArray = userInteractions.slice();
   else
-    interactionsArray = userInteractions.filter( function(item) { return item && (item.userId === primaryUser.id || primaryUser.following.indexOf(item.userId) > -1) });
+    interactionsArray = userInteractions.filter( ({userId}) => (userId === primaryUser.id || primaryUser.following.indexOf(userId) > -1) );
   var container = createElement('div', { id: 'interactions', class: 'shadow' }, createElement('h3', {  }, 'Interactions'));
   var itemsAdded = 0;
   interactionsArray.reverse()
@@ -649,19 +653,19 @@ function likePost(updateElement, postId) {
     primaryUser.likes.push(postId);
     updates[postId].likes.push(primaryUser.id);
     updateElement.className = 'liked';
-    primaryUser.interactions.push(interactions.length);
-    interactions.push({ userId: primaryUser.id, activity: 'like', post: postId });
+    const newId = interactions.slice().pop().id + 1;
+    const newInteraction = { id: newId, userId: primaryUser.id, activity: 'like', post: postId }
+    interactions.push(newInteraction);
+    primaryUser.interactions.push(newInteraction);
   } else {
     primaryUser.likes.splice(primaryUser.likes.indexOf(postId), 1);
     updates[postId].likes.splice(updates[postId].likes.indexOf(primaryUser.id), 1);
     updateElement.className = 'like';
-    var indexToRemove = interactions.findIndex(function(interaction) {
-      if(!interaction)
-        return;
-      return interaction['activity'] === 'like' && interaction['post'] === postId && interaction['userId'] == primaryUser.id;
-    });
-    interactions.splice(indexToRemove, 1, null);
-    primaryUser.interactions.splice(primaryUser.interactions.indexOf(indexToRemove), 1);
+    const interactionToRemove = interactions.find( ({activity, post, userId}) =>
+      (activity === 'like' && post === postId && userId == primaryUser.id)
+    );
+    interactions.splice(interactions.findIndex(interaction => (interaction === interactionToRemove)), 1);
+    primaryUser.interactions.splice(primaryUser.interactions.findIndex(interaction => (interaction === interactionToRemove)), 1);
   }
   if (!currentlyViewing) {
     modifyDocument('remove', 'interactions');
