@@ -154,9 +154,11 @@ var right = document.getElementById('right');
 loadData(); // function call!!!
 function loadData() {
   // Going through updates and replacing userId key with a user key that holds a user object.
+  // And likes with references to users instead of their ids
   updates.forEach( update => {
     update.user = users[update.userId];
     delete update.userId;
+    update.likes = update.likes.map( id => users[id] );
   });
   // Going through each user and replacing interactions array with array of references to the interactions instead of ids
   // Going through each user and replacing likes array with array of references to the actual updates
@@ -178,6 +180,9 @@ function loadData() {
       interaction.followed = users[interaction.followed];
   });
   // Make hashtags refer to the actual posts
+  for (var hashtag in hashtags) {
+    hashtags[hashtag] = hashtags[hashtag].map( id => updates[id]);
+  }
 }
 
 // Takes a formatted time and returns a new Moment obj.
@@ -566,7 +571,7 @@ function addUpdate() {
   const newUpdate = { id: newUpdateId, user: primaryUser, timestamp: moment(), post: post, likes: [] };
   updates.push(newUpdate);
   primaryUser.updatesCount++;
-  addHashtags(post, newUpdateId);
+  addHashtags(newUpdate);
   if (!currentlyViewing) {
     updatesContainer.insertBefore(createElement('div', { class: 'update'}, getUpdateElements(newUpdate)), updatesContainer.firstChild);
     return;
@@ -576,7 +581,8 @@ function addUpdate() {
 }
 
 // Checks the given post for hashtags and adds them to the data model.
-function addHashtags(post, id) {
+function addHashtags(update) {
+  let {post} = update;
   var newHashtags = false;
   post = post.toLowerCase();
   var validCharacters = /^[a-z0-9_]*$/;
@@ -589,10 +595,10 @@ function addHashtags(post, id) {
     if (!hashtag.length)
       continue;
     newHashtags = true;
-    if (hashtags[hashtag] && !hashtags[hashtag].includes(id))
-      hashtags[hashtag].push(id);
+    if (hashtags[hashtag] && !hashtags[hashtag].includes(update))
+      hashtags[hashtag].push(update);
     else if (!hashtags[hashtag])
-      hashtags[hashtag] = [id]
+      hashtags[hashtag] = [update]
     post = post.substring(pointer);
   }
   if (newHashtags) {
@@ -619,7 +625,7 @@ function userUpdates(user) {
 
 // Returns an #update element representing a single update.
 function getUpdateElements({id, user, timestamp, post, likes}) {
-  var liked = (primaryUser.likes.indexOf(id) > -1);
+  var liked = (primaryUser.likes.indexOf(updates[id]) > -1);
   var updateElements = [createElement('div', { class: 'photo', style: 'background-image:url('+ user.profilePic + ')' }, null, ['click', function() { displayProfile(user) }]),
                         createElement('h4', { class: 'name' }, user.displayName, ['click', function() { displayProfile(user) }]),
                         createElement('p', { class: 'username' }, '@' + user.username, ['click', function() { displayProfile(user) }]),
@@ -764,9 +770,7 @@ function viewHashtag(hashtag) {
 // Returns #updates element containing all updates containg the given hashtag
 function hashtagUpdates(hashtag) {
   var updatesToDisplay = [];
-  hashtags[hashtag].forEach(function (updateId) {
-    updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(updates[updateId])));
-  });
+  hashtags[hashtag].forEach(update => { updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(update))) });
   return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
 }
 
