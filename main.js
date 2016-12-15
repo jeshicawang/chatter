@@ -129,16 +129,16 @@ var interactions = [ { id: 0, userId: 0, activity: 'like', post: 6 },
                      { id: 5, userId: 4, activity: 'like', post: 6 },
                      { id: 6, userId: 4, activity: 'like', post: 8 },
                      { id: 7, userId: 4, activity: 'like', post: 9 },
-                     { id: 8, userId: 1, activity: 'follow', user: 0 },
-                     { id: 9, userId: 2, activity: 'follow', user: 0 },
-                     { id: 10, userId: 3, activity: 'follow', user: 0 },
-                     { id: 11, userId: 4, activity: 'follow', user: 0 },
-                     { id: 12, userId: 5, activity: 'follow', user: 0 },
-                     { id: 13, userId: 6, activity: 'follow', user: 0 },
-                     { id: 14, userId: 7, activity: 'follow', user: 0 },
-                     { id: 15, userId: 0, activity: 'follow', user: 3 },
-                     { id: 16, userId: 0, activity: 'follow', user: 5 },
-                     { id: 17, userId: 0, activity: 'follow', user: 1 },
+                     { id: 8, userId: 1, activity: 'follow', followed: 0 },
+                     { id: 9, userId: 2, activity: 'follow', followed: 0 },
+                     { id: 10, userId: 3, activity: 'follow', followed: 0 },
+                     { id: 11, userId: 4, activity: 'follow', followed: 0 },
+                     { id: 12, userId: 5, activity: 'follow', followed: 0 },
+                     { id: 13, userId: 6, activity: 'follow', followed: 0 },
+                     { id: 14, userId: 7, activity: 'follow', followed: 0 },
+                     { id: 15, userId: 0, activity: 'follow', followed: 3 },
+                     { id: 16, userId: 0, activity: 'follow', followed: 5 },
+                     { id: 17, userId: 0, activity: 'follow', followed: 1 },
                      { id: 18, userId: 3, activity: 'like', post: 12 },
                      { id: 19, userId: 3, activity: 'like', post: 7 } ];
 
@@ -161,6 +161,16 @@ function loadData() {
   // Going through each user and replacing interactions array with array of references to the interactions instead of ids
   users.forEach( user => {
     user.interactions = user.interactions.map( id => interactions[id] );
+  });
+  // Going through interactions array for replacing userId with references to the user
+  // going through interactions and replacing post with actual post or followed with user references
+  interactions.forEach( interaction => {
+    interaction.user = users[interaction.userId];
+    delete interaction.userId;
+    if(interaction.hasOwnProperty('post'))
+      interaction.post = updates[interaction.post];
+    else
+      interaction.followed = users[interaction.followed];
   });
 }
 
@@ -203,27 +213,27 @@ function displayProfile(user) {
   document.getElementById('posts').click();
 }
 
-// Follows the user with the given userId
-function follow(id) {
-  var following = primaryUser.following.includes(id);
+// Follows the given user
+function follow(user) {
+  var following = primaryUser.following.includes(user.id);
   var suggestions = document.getElementsByClassName('plus');
-  var index = (id < primaryUser.id) ? id : (id - 1);
+  var index = (user.id < primaryUser.id) ? user.id : (user.id - 1);
   if (!following) {
     suggestions[index].className = 'plus lnr lnr-checkmark-circle';
-    primaryUser.following.unshift(id);
-    users[id].followers.unshift(primaryUser.id);
+    primaryUser.following.unshift(user.id);
+    user.followers.unshift(primaryUser.id);
     const newId = interactions.slice().pop().id + 1;
-    const newInteraction = { id: newId, userId: primaryUser.id, activity: 'follow', user: id };
+    const newInteraction = { id: newId, user: primaryUser, activity: 'follow', followed: user };
     interactions.push(newInteraction);
     primaryUser.interactions.push(newInteraction);
   } else {
     suggestions[index].className = 'plus lnr lnr-plus-circle';
-    index = primaryUser.following.indexOf(id);
+    index = primaryUser.following.indexOf(user.id);
     primaryUser.following.splice(index, 1);
-    index = users[id].followers.indexOf(primaryUser.id);
-    users[id].followers.splice(index, 1);
-    const interactionToRemove = interactions.find( ({activity, user, userId}) =>
-      (activity === 'follow' && user === id && userId == primaryUser.id)
+    index = user.followers.indexOf(primaryUser.id);
+    user.followers.splice(index, 1);
+    const interactionToRemove = interactions.find( ({activity, user: interactionUser, followed}) =>
+      (activity === 'follow' && followed === user && interactionUser == primaryUser)
     );
     interactions.splice(interactions.findIndex(interaction => (interaction === interactionToRemove)), 1);
     primaryUser.interactions.splice(primaryUser.interactions.findIndex(interaction => (interaction === interactionToRemove)), 1);
@@ -240,7 +250,7 @@ function follow(id) {
     left.appendChild(getInteractions(primaryUser, primaryUser.interactions, 0));
     return;
   }
-  if (currentlyViewing !== users[id]) return;
+  if (currentlyViewing !== user) return;
   document.getElementById('follow').firstChild.data = following ? 'Follow' : 'Following';
 }
 
@@ -312,7 +322,7 @@ function allUpdates() {
   var updatesToDisplay = [];
   updates.forEach( update => {
     if(primaryUser.following.includes(update.user.id))
-      updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(update.user, update.id)));
+      updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(update)));
   });
   if (updatesToDisplay.length)
     return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
@@ -338,7 +348,7 @@ function userInfo(user) {
     userInfo.appendChild(createElement('button', { id: 'edit-profile' }, 'Edit Profile', ['click', function() { editProfile() }]));
     return userInfo;
   }
-  userInfo.appendChild(createElement('button', { id: 'follow' }, primaryUser.following.includes(user.id) ? 'Following' : 'Follow', ['click', function() { follow(user.id) }]));
+  userInfo.appendChild(createElement('button', { id: 'follow' }, primaryUser.following.includes(user.id) ? 'Following' : 'Follow', ['click', function() { follow(user) }]));
   return userInfo;
 }
 
@@ -431,37 +441,37 @@ function getInteractions(user, userInteractions, extra) {
   if (user)
     interactionsArray = userInteractions.slice();
   else
-    interactionsArray = userInteractions.filter( ({userId}) => (userId === primaryUser.id || primaryUser.following.indexOf(userId) > -1) );
+    interactionsArray = userInteractions.filter( ({user}) => (user === primaryUser || primaryUser.following.indexOf(user.id) > -1) );
   var container = createElement('div', { id: 'interactions', class: 'shadow' }, createElement('h3', {  }, 'Interactions'));
   var itemsAdded = 0;
   interactionsArray.reverse()
   while (itemsAdded < interactionsDisplayed + extra) {
     var item = interactionsArray[itemsAdded];
     if (!item) break;
-    if (users[item.userId] === primaryUser)
+    if (item.user === primaryUser)
       interaction += 'you ';
     else
-      interaction += '@' + users[item.userId].username + ' ';
+      interaction += '@' + item.user.username + ' ';
     switch (item.activity) {
       case 'like':
-        if (updates[item.post].userId === primaryUser.id) {
+        if (item.post.user === primaryUser) {
           if (interaction === 'you ')
             container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }), interaction + 'liked your own post']));
           else
             container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }), addLinks(interaction + 'liked your post')]));
           break;
         }
-        if (interaction === '@' + updates[item.post].user.username + ' ') {
+        if (interaction === '@' + item.post.user.username + ' ') {
           container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }), addLinks(interaction + 'liked his own post')]));
           break;
         }
-        container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }), addLinks(interaction + 'liked @' + updates[item.post].user.username + '\'s post')]));
+        container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }), addLinks(interaction + 'liked @' + item.post.user.username + '\'s post')]));
         break;
       case 'follow':
-        if (users[item.user].username === primaryUser.username)
+        if (item.followed === primaryUser)
           container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-eye" }), addLinks(interaction + 'followed you')]));
         else
-          container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-eye" }), addLinks(interaction + 'followed @' + users[item.user].username)]));
+          container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-eye" }), addLinks(interaction + 'followed @' + item.followed.username)]));
         break;
     }
     interaction = '';
@@ -551,7 +561,7 @@ function addUpdate() {
   primaryUser.updatesCount++;
   addHashtags(post, newUpdateId);
   if (!currentlyViewing) {
-    updatesContainer.insertBefore(createElement('div', { class: 'update'}, getUpdateElements(primaryUser, newUpdateId)), updatesContainer.firstChild);
+    updatesContainer.insertBefore(createElement('div', { class: 'update'}, getUpdateElements(updates[newUpdateId])), updatesContainer.firstChild);
     return;
   }
   refreshStats(primaryUser);
@@ -589,7 +599,7 @@ function userUpdates(user) {
   var updatesToDisplay = []
   updates.forEach( update => {
     if (update.user === user)
-      updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(user, update.id)));
+      updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(update)));
   });
   if (updatesToDisplay.length)
     return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
@@ -601,16 +611,16 @@ function userUpdates(user) {
 }
 
 // Returns an #update element representing a single update.
-function getUpdateElements(user, index) {
-  var liked = (primaryUser.likes.indexOf(index) > -1);
+function getUpdateElements({user, id}) {
+  var liked = (primaryUser.likes.indexOf(id) > -1);
   var updateElements = [createElement('div', { class: 'photo', style: 'background-image:url('+ user.profilePic + ')' }, null, ['click', function() { displayProfile(user) }]),
                         createElement('h4', { class: 'name' }, user.displayName, ['click', function() { displayProfile(user) }]),
                         createElement('p', { class: 'username' }, '@' + user.username, ['click', function() { displayProfile(user) }]),
-                        createElement('p', { class: 'timestamp' }, updates[index].timestamp.format('h:mmA M/D/YY')),
-                        createElement('p', { class: 'post' }, addLinks(updates[index].post)),
+                        createElement('p', { class: 'timestamp' }, updates[id].timestamp.format('h:mmA M/D/YY')),
+                        createElement('p', { class: 'post' }, addLinks(updates[id].post)),
                         createElement('button', { class: liked ? 'liked' : 'like' }, createElement('span', { class: 'lnr lnr-heart' })),
-                        createElement('span', { class: 'like-count' }, updates[index].likes.length)];
-  updateElements[5].addEventListener('click', function(e) { likePost(e.target, index) });
+                        createElement('span', { class: 'like-count' }, updates[id].likes.length)];
+  updateElements[5].addEventListener('click', e => { likePost(e.target, updates[id]) });
   return updateElements;
 }
 
@@ -647,22 +657,22 @@ function addLinks(post) {
 }
 
 // 'Likes' the given post and records the like in the data model.
-function likePost(updateElement, postId) {
+function likePost(updateElement, update) {
   var liked = (updateElement.className === 'liked');
   if (!liked) {
-    primaryUser.likes.push(postId);
-    updates[postId].likes.push(primaryUser.id);
+    primaryUser.likes.push(update.id);
+    update.likes.push(primaryUser.id);
     updateElement.className = 'liked';
     const newId = interactions.slice().pop().id + 1;
-    const newInteraction = { id: newId, userId: primaryUser.id, activity: 'like', post: postId }
+    const newInteraction = { id: newId, user: primaryUser, activity: 'like', post: update };
     interactions.push(newInteraction);
     primaryUser.interactions.push(newInteraction);
   } else {
-    primaryUser.likes.splice(primaryUser.likes.indexOf(postId), 1);
-    updates[postId].likes.splice(updates[postId].likes.indexOf(primaryUser.id), 1);
+    primaryUser.likes.splice(primaryUser.likes.indexOf(update.id), 1);
+    update.likes.splice(update.likes.indexOf(primaryUser.id), 1);
     updateElement.className = 'like';
-    const interactionToRemove = interactions.find( ({activity, post, userId}) =>
-      (activity === 'like' && post === postId && userId == primaryUser.id)
+    const interactionToRemove = interactions.find( ({activity, post, user}) =>
+      (activity === 'like' && post === update && user == primaryUser)
     );
     interactions.splice(interactions.findIndex(interaction => (interaction === interactionToRemove)), 1);
     primaryUser.interactions.splice(primaryUser.interactions.findIndex(interaction => (interaction === interactionToRemove)), 1);
@@ -675,7 +685,7 @@ function likePost(updateElement, postId) {
     modifyDocument('remove', 'interactions');
     left.appendChild(getInteractions(primaryUser, primaryUser.interactions, 0));
   }
-  updateElement.parentElement.lastChild.textContent = updates[postId].likes.length;
+  updateElement.parentElement.lastChild.textContent = update.likes.length;
 }
 
 // Returns #list element containing a lists of users (for displaying following & followers)
@@ -748,7 +758,7 @@ function viewHashtag(hashtag) {
 function hashtagUpdates(hashtag) {
   var updatesToDisplay = [];
   hashtags[hashtag].forEach(function (updateId) {
-    updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(updates[updateId].user, updateId)));
+    updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(updates[updateId])));
   });
   return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
 }
@@ -763,7 +773,7 @@ function suggestions() {
                                [createElement('div', { class: 'photo', style: 'background-image:url(\'' + user.profilePic + '\')' }, null, ['click', function() { displayProfile(user) }]),
                                 createElement('h4', { class: 'name' }, user.displayName, ['click', function() { displayProfile(user) }]),
                                 createElement('p', { class: 'username' }, '@' + user.username, ['click', function() { displayProfile(user) }]),
-                                createElement('span', { class: 'plus lnr ' + icon }, null, ['click', function() { follow(user.id) }])]));
+                                createElement('span', { class: 'plus lnr ' + icon }, null, ['click', function() { follow(user) }])]));
   });
   return suggestions;
 }
