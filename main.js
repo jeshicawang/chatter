@@ -9,7 +9,7 @@ var users = [ { id: 0,
                 following: [3, 5, 1],
                 followers: [1, 2, 3, 4, 5, 6, 7],
                 updatesCount: 5,
-                likes: ['6', '8', '9'],
+                likes: [6, 8, 9],
                 interactions: [0, 1, 2, 15, 16, 17] },
               { id: 1,
                 username: 'biagi',
@@ -42,7 +42,7 @@ var users = [ { id: 0,
                 following: [0],
                 followers: [0],
                 updatesCount: 0,
-                likes: ['12', '7'],
+                likes: [12, 7],
                 interactions: [10, 18, 19] },
               { id: 4,
                 username: 'diaz',
@@ -53,7 +53,7 @@ var users = [ { id: 0,
                 following: [0],
                 followers: [],
                 updatesCount: 0,
-                likes: ['1', '2', '6', '8', '9'],
+                likes: [1, 2, 6, 8, 9],
                 interactions: [3, 4, 5, 6, 7, 11] },
               { id: 5,
                 username: 'dagostino',
@@ -121,14 +121,14 @@ var hashtags = { adiosarrabal: [13],
                  tango: [0, 3, 4, 5, 7, 11, 12, 13],
                  todoesamor: [5] };
 
-var interactions = [ { userId: 0, activity: 'like', post: '6' },
-                     { userId: 0, activity: 'like', post: '8' },
-                     { userId: 0, activity: 'like', post: '9' },
-                     { userId: 4, activity: 'like', post: '1' },
-                     { userId: 4, activity: 'like', post: '2' },
-                     { userId: 4, activity: 'like', post: '6' },
-                     { userId: 4, activity: 'like', post: '8' },
-                     { userId: 4, activity: 'like', post: '9' },
+var interactions = [ { userId: 0, activity: 'like', post: 6 },
+                     { userId: 0, activity: 'like', post: 8 },
+                     { userId: 0, activity: 'like', post: 9 },
+                     { userId: 4, activity: 'like', post: 1 },
+                     { userId: 4, activity: 'like', post: 2 },
+                     { userId: 4, activity: 'like', post: 6 },
+                     { userId: 4, activity: 'like', post: 8 },
+                     { userId: 4, activity: 'like', post: 9 },
                      { userId: 1, activity: 'follow', user: 0 },
                      { userId: 2, activity: 'follow', user: 0 },
                      { userId: 3, activity: 'follow', user: 0 },
@@ -139,8 +139,8 @@ var interactions = [ { userId: 0, activity: 'like', post: '6' },
                      { userId: 0, activity: 'follow', user: 3 },
                      { userId: 0, activity: 'follow', user: 5 },
                      { userId: 0, activity: 'follow', user: 1 },
-                     { userId: 3, activity: 'like', post: '12' },
-                     { userId: 3, activity: 'like', post: '7' } ];
+                     { userId: 3, activity: 'like', post: 12 },
+                     { userId: 3, activity: 'like', post: 7 } ];
 
 var primaryUser;
 var currentlyViewing = primaryUser;
@@ -149,6 +149,17 @@ var interactionsDisplayed = 10;
 var left = document.getElementById('left');
 var center = document.getElementById('center');
 var right = document.getElementById('right');
+
+// loading data, for testing purposes
+loadData(); // function call!!!
+function loadData() {
+  // Going through updates and replacing userId key with a user key that holds a user object.
+  updates.forEach( update => {
+    update.user = users[update.userId];
+    delete update.userId;
+  });
+  //
+}
 
 // Takes a formatted time and returns a new Moment obj.
 function newMoment(timestamp) {
@@ -161,7 +172,7 @@ function createElement(tag, attributes, children, eventListener) {
   for (var key in attributes) {
     newElement.setAttribute(key, attributes[key]);
   }
-  if(eventListener)
+  if (eventListener)
     newElement.addEventListener(eventListener[0], eventListener[1]);
   if (!children && children !== 0) return newElement;
   if (!(children instanceof Array))
@@ -206,9 +217,8 @@ function follow(id) {
     primaryUser.following.splice(index, 1);
     index = users[id].followers.indexOf(primaryUser.id);
     users[id].followers.splice(index, 1);
-    var indexToRemove = interactions.findIndex(function(interaction) {
-      if(!interaction)
-        return;
+    var indexToRemove = interactions.findIndex( interaction => {
+      if(!interaction) return;
       return interaction['activity'] === 'follow' && interaction['user'] === id && interaction['userId'] == primaryUser.id;
     });
     interactions.splice(indexToRemove, 1, null);
@@ -296,10 +306,10 @@ function goHome() {
 // Returns #updates element containing all updates for the users the primary user is following
 function allUpdates() {
   var updatesToDisplay = [];
-  for (var updateId in updates) {
-    if(primaryUser.following.includes(updates[updateId].userId))
-      updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(users[updates[updateId].userId], updateId)));
-  }
+  updates.forEach( update => {
+    if(primaryUser.following.includes(update.user.id))
+      updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(update.user, update.id)));
+  });
   if (updatesToDisplay.length)
     return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
   updatesToDisplay.push(createElement('div', { class: 'update' }, 'No updates to display. Follow other users to view their updates in your newsfeed.'));
@@ -437,11 +447,11 @@ function getInteractions(user, userInteractions, extra) {
             container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }), addLinks(interaction + 'liked your post')]));
           break;
         }
-        if (interaction === '@' + users[updates[item.post].userId].username + ' ') {
+        if (interaction === '@' + updates[item.post].user.username + ' ') {
           container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }), addLinks(interaction + 'liked his own post')]));
           break;
         }
-        container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }), addLinks(interaction + 'liked @' + users[updates[item.post].userId].username + '\'s post')]));
+        container.appendChild(createElement('p', { class: 'interaction' }, [createElement('span', { class: "lnr lnr-heart" }), addLinks(interaction + 'liked @' + updates[item.post].user.username + '\'s post')]));
         break;
       case 'follow':
         if (users[item.user].username === primaryUser.username)
@@ -532,8 +542,8 @@ function addUpdate() {
   var post = document.getElementById('post-input').value;
   document.getElementById('post-input').value = '';
   if (!post.trim()) return;
-  var newUpdateId = Object.keys(updates).length;
-  updates[newUpdateId] = { userId: primaryUser.id, timestamp: moment(), post: post, likes: [] };
+  var newUpdateId = updates.length;
+  updates.push( { user: primaryUser, timestamp: moment(), post: post, likes: [] } );
   primaryUser.updatesCount++;
   addHashtags(post, newUpdateId);
   if (!currentlyViewing) {
@@ -573,10 +583,10 @@ function addHashtags(post, id) {
 // Returns an #updates element containing all updates for any one given user.
 function userUpdates(user) {
   var updatesToDisplay = []
-  for (var updateId in updates) {
-    if (updates[updateId].userId === user.id)
-      updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(user, updateId)));
-  }
+  updates.forEach( update => {
+    if (update.user === user)
+      updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(user, update.id)));
+  });
   if (updatesToDisplay.length)
     return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
   if (currentlyViewing === primaryUser)
@@ -624,7 +634,7 @@ function addLinks(post) {
     if (char === '#')
       eventListener = ['click', function(e) { viewHashtag(e.target.lastChild.textContent) }];
     else
-      eventListener = ['click', function(e) { displayProfile(users[users.findIndex(function(user){ return e.target.lastChild.textContent === user.username })]) }];
+      eventListener = ['click', function(e) { displayProfile(users.find(function(user){ return e.target.lastChild.textContent === user.username })) }];
     components.push(createElement('a', { class: 'hashtag', href: '#' }, [char, createElement('span', {  }, hashtag)], eventListener));
     post = post.substring(pointer);
   }
@@ -734,7 +744,7 @@ function viewHashtag(hashtag) {
 function hashtagUpdates(hashtag) {
   var updatesToDisplay = [];
   hashtags[hashtag].forEach(function (updateId) {
-    updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(users[updates[updateId].userId], updateId.toString())));
+    updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(updates[updateId].user, updateId)));
   });
   return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
 }
