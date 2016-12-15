@@ -159,8 +159,13 @@ function loadData() {
     delete update.userId;
   });
   // Going through each user and replacing interactions array with array of references to the interactions instead of ids
+  // Going through each user and replacing likes array with array of references to the actual updates
+  // Same with following and followers.
   users.forEach( user => {
     user.interactions = user.interactions.map( id => interactions[id] );
+    user.likes = user.likes.map( id => updates[id] );
+    user.following = user.following.map( id => users[id] );
+    user.followers = user.followers.map( id => users[id] );
   });
   // Going through interactions array for replacing userId with references to the user
   // going through interactions and replacing post with actual post or followed with user references
@@ -172,6 +177,7 @@ function loadData() {
     else
       interaction.followed = users[interaction.followed];
   });
+  // Make hashtags refer to the actual posts
 }
 
 // Takes a formatted time and returns a new Moment obj.
@@ -215,28 +221,28 @@ function displayProfile(user) {
 
 // Follows the given user
 function follow(user) {
-  var following = primaryUser.following.includes(user.id);
+  var following = primaryUser.following.includes(user);
   var suggestions = document.getElementsByClassName('plus');
   var index = (user.id < primaryUser.id) ? user.id : (user.id - 1);
   if (!following) {
     suggestions[index].className = 'plus lnr lnr-checkmark-circle';
-    primaryUser.following.unshift(user.id);
-    user.followers.unshift(primaryUser.id);
+    primaryUser.following.unshift(user);
+    user.followers.unshift(primaryUser);
     const newId = interactions.slice().pop().id + 1;
     const newInteraction = { id: newId, user: primaryUser, activity: 'follow', followed: user };
     interactions.push(newInteraction);
     primaryUser.interactions.push(newInteraction);
   } else {
     suggestions[index].className = 'plus lnr lnr-plus-circle';
-    index = primaryUser.following.indexOf(user.id);
+    index = primaryUser.following.indexOf(user);
     primaryUser.following.splice(index, 1);
-    index = user.followers.indexOf(primaryUser.id);
+    index = user.followers.indexOf(primaryUser);
     user.followers.splice(index, 1);
     const interactionToRemove = interactions.find( ({activity, user: interactionUser, followed}) =>
       (activity === 'follow' && followed === user && interactionUser == primaryUser)
     );
-    interactions.splice(interactions.findIndex(interaction => (interaction === interactionToRemove)), 1);
-    primaryUser.interactions.splice(primaryUser.interactions.findIndex(interaction => (interaction === interactionToRemove)), 1);
+    interactions.splice(interactions.indexOf(interactionToRemove), 1);
+    primaryUser.interactions.splice(primaryUser.interactions.indexOf(interactionToRemove), 1);
   }
   if (!currentlyViewing) {
     goHome();
@@ -321,7 +327,7 @@ function goHome() {
 function allUpdates() {
   var updatesToDisplay = [];
   updates.forEach( update => {
-    if(primaryUser.following.includes(update.user.id))
+    if(primaryUser.following.includes(update.user))
       updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(update)));
   });
   if (updatesToDisplay.length)
@@ -441,7 +447,7 @@ function getInteractions(user, userInteractions, extra) {
   if (user)
     interactionsArray = userInteractions.slice();
   else
-    interactionsArray = userInteractions.filter( ({user}) => (user === primaryUser || primaryUser.following.indexOf(user.id) > -1) );
+    interactionsArray = userInteractions.filter( ({user}) => (user === primaryUser || primaryUser.following.indexOf(user) > -1) );
   var container = createElement('div', { id: 'interactions', class: 'shadow' }, createElement('h3', {  }, 'Interactions'));
   var itemsAdded = 0;
   interactionsArray.reverse()
@@ -557,11 +563,12 @@ function addUpdate() {
   document.getElementById('post-input').value = '';
   if (!post.trim()) return;
   var newUpdateId = updates.length;
-  updates.push( { user: primaryUser, timestamp: moment(), post: post, likes: [] } );
+  const newUpdate = { id: newUpdateId, user: primaryUser, timestamp: moment(), post: post, likes: [] };
+  updates.push(newUpdate);
   primaryUser.updatesCount++;
   addHashtags(post, newUpdateId);
   if (!currentlyViewing) {
-    updatesContainer.insertBefore(createElement('div', { class: 'update'}, getUpdateElements(updates[newUpdateId])), updatesContainer.firstChild);
+    updatesContainer.insertBefore(createElement('div', { class: 'update'}, getUpdateElements(newUpdate)), updatesContainer.firstChild);
     return;
   }
   refreshStats(primaryUser);
@@ -611,15 +618,15 @@ function userUpdates(user) {
 }
 
 // Returns an #update element representing a single update.
-function getUpdateElements({user, id}) {
+function getUpdateElements({id, user, timestamp, post, likes}) {
   var liked = (primaryUser.likes.indexOf(id) > -1);
   var updateElements = [createElement('div', { class: 'photo', style: 'background-image:url('+ user.profilePic + ')' }, null, ['click', function() { displayProfile(user) }]),
                         createElement('h4', { class: 'name' }, user.displayName, ['click', function() { displayProfile(user) }]),
                         createElement('p', { class: 'username' }, '@' + user.username, ['click', function() { displayProfile(user) }]),
-                        createElement('p', { class: 'timestamp' }, updates[id].timestamp.format('h:mmA M/D/YY')),
-                        createElement('p', { class: 'post' }, addLinks(updates[id].post)),
+                        createElement('p', { class: 'timestamp' }, timestamp.format('h:mmA M/D/YY')),
+                        createElement('p', { class: 'post' }, addLinks(post)),
                         createElement('button', { class: liked ? 'liked' : 'like' }, createElement('span', { class: 'lnr lnr-heart' })),
-                        createElement('span', { class: 'like-count' }, updates[id].likes.length)];
+                        createElement('span', { class: 'like-count' }, likes.length)];
   updateElements[5].addEventListener('click', e => { likePost(e.target, updates[id]) });
   return updateElements;
 }
@@ -648,7 +655,7 @@ function addLinks(post) {
     if (char === '#')
       eventListener = ['click', function(e) { viewHashtag(e.target.lastChild.textContent) }];
     else
-      eventListener = ['click', function(e) { displayProfile(users.find(function(user){ return e.target.lastChild.textContent === user.username })) }];
+      eventListener = ['click', function(e) { displayProfile(users.find( ({username}) => (e.target.lastChild.textContent === username) )) }];
     components.push(createElement('a', { class: 'hashtag', href: '#' }, [char, createElement('span', {  }, hashtag)], eventListener));
     post = post.substring(pointer);
   }
@@ -660,7 +667,7 @@ function addLinks(post) {
 function likePost(updateElement, update) {
   var liked = (updateElement.className === 'liked');
   if (!liked) {
-    primaryUser.likes.push(update.id);
+    primaryUser.likes.push(update);
     update.likes.push(primaryUser.id);
     updateElement.className = 'liked';
     const newId = interactions.slice().pop().id + 1;
@@ -668,14 +675,14 @@ function likePost(updateElement, update) {
     interactions.push(newInteraction);
     primaryUser.interactions.push(newInteraction);
   } else {
-    primaryUser.likes.splice(primaryUser.likes.indexOf(update.id), 1);
+    primaryUser.likes.splice(primaryUser.likes.indexOf(update), 1);
     update.likes.splice(update.likes.indexOf(primaryUser.id), 1);
     updateElement.className = 'like';
     const interactionToRemove = interactions.find( ({activity, post, user}) =>
       (activity === 'like' && post === update && user == primaryUser)
     );
-    interactions.splice(interactions.findIndex(interaction => (interaction === interactionToRemove)), 1);
-    primaryUser.interactions.splice(primaryUser.interactions.findIndex(interaction => (interaction === interactionToRemove)), 1);
+    interactions.splice(interactions.indexOf(interactionToRemove), 1);
+    primaryUser.interactions.splice(primaryUser.interactions.indexOf(interactionToRemove), 1);
   }
   if (!currentlyViewing) {
     modifyDocument('remove', 'interactions');
@@ -689,9 +696,9 @@ function likePost(updateElement, update) {
 }
 
 // Returns #list element containing a lists of users (for displaying following & followers)
-function listOfUsers(references) {
+function listOfUsers(usersList) {
   var list = createElement('table', { id: 'list', class: 'shadow' }, null, ['click', function(e) { displayProfile((e.target.id && e.target.id !== 'list') ? users[e.target.id] : null) }]);
-  if (!references.length) {
+  if (!usersList.length) {
     var message = createElement('p', { class: 'message' });
     if (currentlyViewing === primaryUser && viewing === 'following')
       message.textContent = 'You are not following any users yet.'
@@ -704,8 +711,8 @@ function listOfUsers(references) {
     list.appendChild(message);
     return list;
   }
-  var oddRow = (references.length % 2 === 1);
-  var rows = Math.floor(references.length / 2) + (oddRow ? 1 : 0);
+  var oddRow = (usersList.length % 2 === 1);
+  var rows = Math.floor(usersList.length / 2) + (oddRow ? 1 : 0);
   while (rows > 0) {
     if (!oddRow || rows > 1)
       list.appendChild(createElement('tr', {  }, [createElement('td', { class: 'user' }), createElement('td', { class: 'user' })]));
@@ -715,12 +722,12 @@ function listOfUsers(references) {
   }
   var userElements = list.getElementsByClassName('user');
   for (var i = 0; i < userElements.length; i++) {
-    var theUser = users[references[i]];
-    userElements.item(i).setAttribute('id', references[i]);
-    userElements.item(i).appendChild(createElement('div', { class: 'photo', style: 'background-image:url(' + theUser.profilePic + ')' }));
-    userElements.item(i).appendChild(createElement('h4', { class: 'name' }, theUser.displayName));
-    userElements.item(i).appendChild(createElement('p', { class: 'username' }, '@' + theUser.username));
-    userElements.item(i).appendChild(createElement('p', { class: 'stat' }, theUser.updatesCount + ' posts . ' + theUser.following.length + ' following . ' + theUser.followers.length + ' followers'));
+    var {id, username, displayName, profilePic, updatesCount, following, followers} = usersList[i];
+    userElements.item(i).setAttribute('id', id);
+    userElements.item(i).appendChild(createElement('div', { class: 'photo', style: 'background-image:url(' + profilePic + ')' }));
+    userElements.item(i).appendChild(createElement('h4', { class: 'name' }, displayName));
+    userElements.item(i).appendChild(createElement('p', { class: 'username' }, '@' + username));
+    userElements.item(i).appendChild(createElement('p', { class: 'stat' }, updatesCount + ' posts . ' + following.length + ' following . ' + followers.length + ' followers'));
   }
   return list;
 }
@@ -768,7 +775,7 @@ function suggestions() {
   var suggestions = createElement('div', { id: 'suggestions', class: 'shadow' }, [createElement('h3', {  }, 'Who to follow')]);
   users.forEach( function(user) {
     if (user === primaryUser) return;
-    var icon = primaryUser.following.includes(user.id) ? 'lnr-checkmark-circle' : 'lnr-plus-circle';
+    var icon = primaryUser.following.includes(user) ? 'lnr-checkmark-circle' : 'lnr-plus-circle';
     suggestions.appendChild(createElement('div', { class: 'user' },
                                [createElement('div', { class: 'photo', style: 'background-image:url(\'' + user.profilePic + '\')' }, null, ['click', function() { displayProfile(user) }]),
                                 createElement('h4', { class: 'name' }, user.displayName, ['click', function() { displayProfile(user) }]),
@@ -782,7 +789,7 @@ function suggestions() {
 function checkSearchInput() {
   var input = document.getElementById('search-input').value;
   if (!input.trim()) return;
-  displayProfile(users.find( function(user) { return (user.username === input); }));
+  displayProfile(users.find( ({username}) => (username === input) ));
   document.getElementById('search-input').value = '';
 }
 
@@ -852,11 +859,11 @@ function getSearchResults(key) {
       primaryUserAdded = true;
       return;
     }
-    if (primaryUserAdded && primaryUser.following.indexOf(user.id) > -1) {
+    if (primaryUserAdded && primaryUser.following.indexOf(user) > -1) {
       results.splice(1, 0, addResult(user))
       return;
     }
-    if (primaryUser.following.indexOf(user.id) > -1) {
+    if (primaryUser.following.indexOf(user) > -1) {
       results.unshift(addResult(user));
       return;
     }
