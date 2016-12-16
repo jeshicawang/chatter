@@ -94,49 +94,7 @@ const interactions = [new LikeInteraction(0, users[0], 'like', updates[6]),
                       new LikeInteraction(18, users[3], 'like', updates[12]),
                       new LikeInteraction(19, users[3], 'like', updates[7])];
 
-updates[1].likes = [users[4]];
-updates[2].likes = [users[4]];
-updates[6].likes = [users[0], users[4]];
-updates[7].likes = [users[3]];
-updates[8].likes = [users[0], users[4]];
-updates[9].likes = [users[0], users[4]];
-updates[12].likes = [users[3]];
-
-users[0].following = [users[3], users[5], users[1]];
-users[0].followers = [users[1], users[2], users[3], users[4], users[5], users[6], users[7]];
-users[0].updatesCount = 5;
-users[0].likes = [updates[6], updates[8], updates[9]];
-users[0].interactions = [interactions[0], interactions[1], interactions[2], interactions[15], interactions[16], interactions[17]];
-
-users[1].following = [users[0]];
-users[1].followers = [users[0]];
-users[1].updatesCount = 3;
-users[1].interactions = [interactions[8]];
-
-users[2].following = [users[0]];
-users[2].updatesCount = 2;
-users[2].interactions = [interactions[9]];
-
-users[3].following = [users[0]];
-users[3].followers = [users[0]];
-users[3].likes = [updates[12], updates[7]];
-users[3].interactions = [interactions[10], interactions[18], interactions[19]];
-
-users[4].following = [users[0]];
-users[4].likes = [updates[1], updates[2], updates[6], updates[8], updates[9]];
-users[4].interactions = [interactions[3], interactions[4], interactions[5], interactions[6], interactions[7], interactions[11]];
-
-users[5].following = [users[0]];
-users[5].followers = [users[0]];
-users[5].interactions = [interactions[12]];
-
-users[6].following = [users[0]];
-users[6].interactions = [interactions[13]];
-
-users[7].following = [users[0]],
-users[7].interactions = [interactions[14]];
-
-var hashtags = { adiosarrabal: [updates[13]],
+const hashtags = { adiosarrabal: [updates[13]],
              ahoranomeconoces: [updates[12]],
                   angelvargas: [updates[12], updates[13]],
                   campoafuera: [updates[14]],
@@ -158,6 +116,43 @@ let interactionsDisplayed = 10;
 const left = document.getElementById('left');
 const center = document.getElementById('center');
 const right = document.getElementById('right');
+
+// Preloaded interactions for demonstration pruposes.
+function loadDemoInteractions() {
+  updates[1].likes = [users[4]];
+  updates[2].likes = [users[4]];
+  updates[6].likes = [users[0], users[4]];
+  updates[7].likes = [users[3]];
+  updates[8].likes = [users[0], users[4]];
+  updates[9].likes = [users[0], users[4]];
+  updates[12].likes = [users[3]];
+  users[0].following = [users[3], users[5], users[1]];
+  users[0].followers = [users[1], users[2], users[3], users[4], users[5], users[6], users[7]];
+  users[0].updatesCount = 5;
+  users[0].likes = [updates[6], updates[8], updates[9]];
+  users[0].interactions = [interactions[0], interactions[1], interactions[2], interactions[15], interactions[16], interactions[17]];
+  users[1].following = [users[0]];
+  users[1].followers = [users[0]];
+  users[1].updatesCount = 3;
+  users[1].interactions = [interactions[8]];
+  users[2].following = [users[0]];
+  users[2].updatesCount = 2;
+  users[2].interactions = [interactions[9]];
+  users[3].following = [users[0]];
+  users[3].followers = [users[0]];
+  users[3].likes = [updates[12], updates[7]];
+  users[3].interactions = [interactions[10], interactions[18], interactions[19]];
+  users[4].following = [users[0]];
+  users[4].likes = [updates[1], updates[2], updates[6], updates[8], updates[9]];
+  users[4].interactions = [interactions[3], interactions[4], interactions[5], interactions[6], interactions[7], interactions[11]];
+  users[5].following = [users[0]];
+  users[5].followers = [users[0]];
+  users[5].interactions = [interactions[12]];
+  users[6].following = [users[0]];
+  users[6].interactions = [interactions[13]];
+  users[7].following = [users[0]],
+  users[7].interactions = [interactions[14]];
+}
 
 // Takes a formatted time and returns a new Moment obj.
 function newMoment(timestamp) {
@@ -872,6 +867,9 @@ document.getElementById('search-input').addEventListener('focus', displayResults
 document.getElementById('profile-button').addEventListener('click', function() { displayProfile(primaryUser) });
 document.getElementById('logout-button').addEventListener('click', logout);
 document.getElementById('body').addEventListener('click', function(e) { hideResults(e) });
+
+// Loads predetermined interactions for demonstration purposes.
+loadDemoInteractions()
 
 // Bypass login page. (for testing purposes)
 primaryUser = users[0];
