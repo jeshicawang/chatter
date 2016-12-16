@@ -48,56 +48,51 @@ class FollowInteraction extends Interaction {
   }
 }
 
+const users = [new User(0, 'jwang', 'wanj', 'Jessica Wang', 'images/jwang.jpg', 'Coffee lover. Dancer. Developer;)'),
+               new User(1, 'biagi', 'rodolfo', 'Rodolfo Biagi', 'images/biagi.jpg', 'An Argentine Tango musician who started his musical career by playing background music for silent movies.'),
+               new User(2, 'varela', 'hector', 'Hector Varela', 'images/varela.jpg', 'Varela was a musician criticized by the innovative players, but loved by the fans of dancing and popular tango.'),
+               new User(3, 'donato', 'edgardo', 'Edgardo Donato', 'images/donato.jpg', 'Donato was a tango composer and orchestra leader, born in Buenos Aires, Argentina, raised from a young age and musically trained in Montevideo, Uruguay.'),
+               new User(4, 'diaz', 'hugo', 'Hugo Diaz', 'images/diaz.jpg', 'Víctor Hugo Díaz was a tango, folklore and jazz harmonicist.'),
+               new User(5, 'dagostino', 'angel', 'Angel D\'Agostino', 'images/dagostino.jpg', 'I am milonguero, I always was, in the best sense of the word.'),
+               new User(6, 'darienzo', 'juan', 'Juan D\'Arienzo', 'images/darienzo.jpg', 'Juan D\'Arienzo was an Argentine tango musician, also known as \"El Rey del Compás\".'),
+               new User(7, 'demare', 'lucio', 'Lucio Demare', 'images/demare.jpg', 'Lucio Demare was an Argentine composer who worked on a number of film scores.')];
 
-var users = [];
-var updates = [];
-var interactions = [];
+const updates = [new Update(0, users[2], newMoment('7:00AM 11/21/16'), 'Es la historia de un amor, como no hay otro igual. Que me hizo comprender, todo el bien todo el mal, que le dio luz a mi vida, apagandola después. ¡Ay, qué vida tan oscura, corazón, sin tu amor no viviré! #historiadeunamor #tango'),
+                 new Update(1, users[0], newMoment('9:00AM 11/22/16'), 'Starting my weekday by going to coding class!'),
+                 new Update(2, users[0], newMoment('11:30AM 11/22/16'), 'Off to my lunch break! Maybe I\'ll go across the street?'),
+                 new Update(3, users[1], newMoment('11:45AM 11/22/16'), 'Soñemos, que los dos estamos libres. Soñemos, en la gloria de este amor. Soñemos, que ya nada nos separa, y que somos cual dos almas, que nacieron para amar. #sonemos #hugoduval #tango'),
+                 new Update(4, users[1], newMoment('11:55AM 11/22/16'), 'La soledad, que me envuelve el corazón, va encendiendo en mi alma, el fuego de tu amor lejano. En las brumas de tu olvido, viaja mi ilusión, gritando tu nombre en vano. #caricias #hugoduval #tango'),
+                 new Update(5, users[1], newMoment('12:00PM 11/22/16'), 'Todo es amor, la brisa y tú, jugando en el rumor, y el ruiseñor, cantando en una flor, buscando amor, amor. #todoesamor #hugoduval #tango'),
+                 new Update(6, users[0], newMoment('12:15PM 11/22/16'), '...and lunch is over, so back to class.'),
+                 new Update(7, users[2], newMoment('2:00PM 11/22/16'), 'No me hablas tesoro mio, No me hablas ni me has mirado, Fueron tres años mi vida, Tres años muy lejos de tu corazon. #fuerontresanos #tango'),
+                 new Update(8, users[0], newMoment('4:30PM 11/22/16'), 'Class just ended.'),
+                 new Update(9, users[0], newMoment('5:00PM 11/22/16'), 'I\'m going home for the day!'),
+                 new Update(10, users[3], moment(), 'Sacále punta a esta milonga, que ya empezó. Seguí esos fueyes que rezongan, del corazón. Y las pebetas que han venido, del Club Fulgor. El tango requiebra la vida, Y en sus notas desparrama, su amor. #sacalepunta #milonga'),
+                 new Update(11, users[3], moment(), '¡Carnaval de mi barrio!, donde todo es amor, cascabeles de risa, matizando el dolor, ¡carnaval de mi barrio!, pedacito de sol, con nostalgias de luna, y canción de farol. #carnavaldemibarrio #tango'),
+                 new Update(12, users[5], moment(), 'Ahora no me conocés… ¡me borro tu ingratitud!… Aunque dejés mi alma trunca, no podrás olvidar nunca, lo de nuestra juventud… #ahoranomeconoces #angelvargas #tango'),
+                 new Update(13, users[5], moment(), 'Mañanita arrabalera, Sin taitas por las veredas, Ni minas en el balcón, Tus faroles apagados. #adiosarrabal #angelvargas #tango'),
+                 new Update(14, users[1], moment(), 'Ya sé que me has olvidado, ya sé que te fuiste lejos. Ya sé que con mis consejos, no te voy a enderezar. #campoafuera #milonga')];
 
-users.push(new User(0, 'jwang', 'wanj', 'Jessica Wang', 'images/jwang.jpg', 'Coffee lover. Dancer. Developer;)'));
-users.push(new User(1, 'biagi', 'rodolfo', 'Rodolfo Biagi', 'images/biagi.jpg', 'An Argentine Tango musician who started his musical career by playing background music for silent movies.'));
-users.push(new User(2, 'varela', 'hector', 'Hector Varela', 'images/varela.jpg', 'Varela was a musician criticized by the innovative players, but loved by the fans of dancing and popular tango.'));
-users.push(new User(3, 'donato', 'edgardo', 'Edgardo Donato', 'images/donato.jpg', 'Donato was a tango composer and orchestra leader, born in Buenos Aires, Argentina, raised from a young age and musically trained in Montevideo, Uruguay.'));
-users.push(new User(4, 'diaz', 'hugo', 'Hugo Diaz', 'images/diaz.jpg', 'Víctor Hugo Díaz was a tango, folklore and jazz harmonicist.'));
-users.push(new User(5, 'dagostino', 'angel', 'Angel D\'Agostino', 'images/dagostino.jpg', 'I am milonguero, I always was, in the best sense of the word.'));
-users.push(new User(6, 'darienzo', 'juan', 'Juan D\'Arienzo', 'images/darienzo.jpg', 'Juan D\'Arienzo was an Argentine tango musician, also known as \"El Rey del Compás\".'));
-users.push(new User(7, 'demare', 'lucio', 'Lucio Demare', 'images/demare.jpg', 'Lucio Demare was an Argentine composer who worked on a number of film scores.'));
-
-updates.push(new Update(0, users[2], newMoment('7:00AM 11/21/16'), 'Es la historia de un amor, como no hay otro igual. Que me hizo comprender, todo el bien todo el mal, que le dio luz a mi vida, apagandola después. ¡Ay, qué vida tan oscura, corazón, sin tu amor no viviré! #historiadeunamor #tango'));
-updates.push(new Update(1, users[0], newMoment('9:00AM 11/22/16'), 'Starting my weekday by going to coding class!'));
-updates.push(new Update(2, users[0], newMoment('11:30AM 11/22/16'), 'Off to my lunch break! Maybe I\'ll go across the street?'));
-updates.push(new Update(3, users[1], newMoment('11:45AM 11/22/16'), 'Soñemos, que los dos estamos libres. Soñemos, en la gloria de este amor. Soñemos, que ya nada nos separa, y que somos cual dos almas, que nacieron para amar. #sonemos #hugoduval #tango'));
-updates.push(new Update(4, users[1], newMoment('11:55AM 11/22/16'), 'La soledad, que me envuelve el corazón, va encendiendo en mi alma, el fuego de tu amor lejano. En las brumas de tu olvido, viaja mi ilusión, gritando tu nombre en vano. #caricias #hugoduval #tango'));
-updates.push(new Update(5, users[1], newMoment('12:00PM 11/22/16'), 'Todo es amor, la brisa y tú, jugando en el rumor, y el ruiseñor, cantando en una flor, buscando amor, amor. #todoesamor #hugoduval #tango'));
-updates.push(new Update(6, users[0], newMoment('12:15PM 11/22/16'), '...and lunch is over, so back to class.'));
-updates.push(new Update(7, users[2], newMoment('2:00PM 11/22/16'), 'No me hablas tesoro mio, No me hablas ni me has mirado, Fueron tres años mi vida, Tres años muy lejos de tu corazon. #fuerontresanos #tango'));
-updates.push(new Update(8, users[0], newMoment('4:30PM 11/22/16'), 'Class just ended.'));
-updates.push(new Update(9, users[0], newMoment('5:00PM 11/22/16'), 'I\'m going home for the day!'));
-updates.push(new Update(10, users[3], moment(), 'Sacále punta a esta milonga, que ya empezó. Seguí esos fueyes que rezongan, del corazón. Y las pebetas que han venido, del Club Fulgor. El tango requiebra la vida, Y en sus notas desparrama, su amor. #sacalepunta #milonga'));
-updates.push(new Update(11, users[3], moment(), '¡Carnaval de mi barrio!, donde todo es amor, cascabeles de risa, matizando el dolor, ¡carnaval de mi barrio!, pedacito de sol, con nostalgias de luna, y canción de farol. #carnavaldemibarrio #tango'));
-updates.push(new Update(12, users[5], moment(), 'Ahora no me conocés… ¡me borro tu ingratitud!… Aunque dejés mi alma trunca, no podrás olvidar nunca, lo de nuestra juventud… #ahoranomeconoces #angelvargas #tango'));
-updates.push(new Update(13, users[5], moment(), 'Mañanita arrabalera, Sin taitas por las veredas, Ni minas en el balcón, Tus faroles apagados. #adiosarrabal #angelvargas #tango'));
-updates.push(new Update(14, users[1], moment(), 'Ya sé que me has olvidado, ya sé que te fuiste lejos. Ya sé que con mis consejos, no te voy a enderezar. #campoafuera #milonga'));
-
-interactions.push(new LikeInteraction(0, users[0], 'like', updates[6]));
-interactions.push(new LikeInteraction(1, users[0], 'like', updates[8]));
-interactions.push(new LikeInteraction(2, users[0], 'like', updates[9]));
-interactions.push(new LikeInteraction(3, users[4], 'like', updates[1]));
-interactions.push(new LikeInteraction(4, users[4], 'like', updates[2]));
-interactions.push(new LikeInteraction(5, users[4], 'like', updates[6]));
-interactions.push(new LikeInteraction(6, users[4], 'like', updates[8]));
-interactions.push(new LikeInteraction(7, users[4], 'like', updates[9]));
-interactions.push(new FollowInteraction(8, users[1], 'follow', users[0]));
-interactions.push(new FollowInteraction(9, users[2], 'follow', users[0]));
-interactions.push(new FollowInteraction(10, users[3], 'follow', users[0]));
-interactions.push(new FollowInteraction(11, users[4], 'follow', users[0]));
-interactions.push(new FollowInteraction(12, users[5], 'follow', users[0]));
-interactions.push(new FollowInteraction(13, users[6], 'follow', users[0]));
-interactions.push(new FollowInteraction(14, users[7], 'follow', users[0]));
-interactions.push(new FollowInteraction(15, users[0], 'follow', users[3]));
-interactions.push(new FollowInteraction(16, users[0], 'follow', users[5]));
-interactions.push(new FollowInteraction(17, users[0], 'follow', users[1]));
-interactions.push(new LikeInteraction(18, users[3], 'like', updates[12]));
-interactions.push(new LikeInteraction(19, users[3], 'like', updates[7]));
+const interactions = [new LikeInteraction(0, users[0], 'like', updates[6]),
+                      new LikeInteraction(1, users[0], 'like', updates[8]),
+                      new LikeInteraction(2, users[0], 'like', updates[9]),
+                      new LikeInteraction(3, users[4], 'like', updates[1]),
+                      new LikeInteraction(4, users[4], 'like', updates[2]),
+                      new LikeInteraction(5, users[4], 'like', updates[6]),
+                      new LikeInteraction(6, users[4], 'like', updates[8]),
+                      new LikeInteraction(7, users[4], 'like', updates[9]),
+                      new FollowInteraction(8, users[1], 'follow', users[0]),
+                      new FollowInteraction(9, users[2], 'follow', users[0]),
+                      new FollowInteraction(10, users[3], 'follow', users[0]),
+                      new FollowInteraction(11, users[4], 'follow', users[0]),
+                      new FollowInteraction(12, users[5], 'follow', users[0]),
+                      new FollowInteraction(13, users[6], 'follow', users[0]),
+                      new FollowInteraction(14, users[7], 'follow', users[0]),
+                      new FollowInteraction(15, users[0], 'follow', users[3]),
+                      new FollowInteraction(16, users[0], 'follow', users[5]),
+                      new FollowInteraction(17, users[0], 'follow', users[1]),
+                      new LikeInteraction(18, users[3], 'like', updates[12]),
+                      new LikeInteraction(19, users[3], 'like', updates[7])];
 
 updates[1].likes = [users[4]];
 updates[2].likes = [users[4]];
@@ -141,133 +136,6 @@ users[6].interactions = [interactions[13]];
 users[7].following = [users[0]],
 users[7].interactions = [interactions[14]];
 
-/* var users = [ { id: 0,
-                username: 'jwang',
-                password: 'wanj',
-                displayName: 'Jessica Wang',
-                profilePic: 'images/jwang.jpg',
-                bio: 'Coffee lover. Dancer. Developer;)',
-                following: [users[3], users[5], users[1]],
-                followers: [users[1], users[2], users[3], users[4], users[5], users[6], users[7]],
-                updatesCount: 5,
-                likes: [updates[6], updates[8], updates[9]],
-                interactions: [interactions[0], interactions[1], interactions[2], interactions[15], interactions[16], interactions[17]] },
-              { id: 1,
-                username: 'biagi',
-                password: 'rodolfo',
-                displayName: 'Rodolfo Biagi',
-                profilePic: 'images/biagi.jpg',
-                bio: 'An Argentine Tango musician who started his musical career by playing background music for silent movies.',
-                following: [users[0]],
-                followers: [users[0]],
-                updatesCount: 3,
-                likes: [],
-                interactions: [interactions[8]] },
-              { id: 2,
-                username: 'varela',
-                password: 'hector',
-                displayName: 'Hector Varela',
-                profilePic: 'images/varela.jpg',
-                bio: 'Varela was a musician criticized by the innovative players, but loved by the fans of dancing and popular tango.',
-                following: [users[0]],
-                followers: [],
-                updatesCount: 2,
-                likes: [],
-                interactions: [interactions[9]] },
-              { id: 3,
-                username: 'donato',
-                password: 'edgardo',
-                displayName: 'Edgardo Donato',
-                profilePic: 'images/donato.jpg',
-                bio: 'Donato was a tango composer and orchestra leader, born in Buenos Aires, Argentina, raised from a young age and musically trained in Montevideo, Uruguay.',
-                following: [users[0]],
-                followers: [users[0]],
-                updatesCount: 0,
-                likes: [updates[12], updates[7]],
-                interactions: [interactions[10], interactions[18], interactions[19]] },
-              { id: 4,
-                username: 'diaz',
-                password: 'hugo',
-                displayName: 'Hugo Diaz',
-                profilePic: 'images/diaz.jpg',
-                bio: 'Víctor Hugo Díaz was a tango, folklore and jazz harmonicist.',
-                following: [users[0]],
-                followers: [],
-                updatesCount: 0,
-                likes: [updates[1], updates[2], updates[6], updates[8], updates[9]],
-                interactions: [interactions[3], interactions[4], interactions[5], interactions[6], interactions[7], interactions[11]] },
-              { id: 5,
-                username: 'dagostino',
-                password: 'angel',
-                displayName: 'Angel D\'Agostino',
-                profilePic: 'images/dagostino.jpg',
-                bio: 'I am milonguero, I always was, in the best sense of the word.',
-                following: [users[0]],
-                followers: [users[0]],
-                updatesCount: 0,
-                likes: [],
-                interactions: [interactions[12]] },
-              { id: 6,
-                username: 'darienzo',
-                password: 'juan',
-                displayName: 'Juan D\'Arienzo',
-                profilePic: 'images/darienzo.jpg',
-                bio: 'Juan D\'Arienzo was an Argentine tango musician, also known as \"El Rey del Compás\".',
-                following: [users[0]],
-                followers: [],
-                updatesCount: 0,
-                likes: [],
-                interactions: [interactions[13]] },
-              { id: 7,
-                username: 'demare',
-                password: 'lucio',
-                displayName: 'Lucio Demare',
-                profilePic: 'images/demare.jpg',
-                bio: 'Lucio Demare was an Argentine composer who worked on a number of film scores.',
-                following: [users[0]],
-                followers: [],
-                updatesCount: 0,
-                likes: [],
-                interactions: [interactions[14]] }
-];
-
-var updates = [ { id: 0, user: users[2], timestamp: newMoment('7:00AM 11/21/16'), post: 'Es la historia de un amor, como no hay otro igual. Que me hizo comprender, todo el bien todo el mal, que le dio luz a mi vida, apagandola después. ¡Ay, qué vida tan oscura, corazón, sin tu amor no viviré! #historiadeunamor #tango', likes: [] },
-                { id: 1, user: users[0], timestamp: newMoment('9:00AM 11/22/16'), post: 'Starting my weekday by going to coding class!', likes: [users[4]] },
-                { id: 2, user: users[0], timestamp: newMoment('11:30AM 11/22/16'), post: 'Off to my lunch break! Maybe I\'ll go across the street?', likes: [users[4]] },
-                { id: 3, user: users[1], timestamp: newMoment('11:45AM 11/22/16'), post: 'Soñemos, que los dos estamos libres. Soñemos, en la gloria de este amor. Soñemos, que ya nada nos separa, y que somos cual dos almas, que nacieron para amar. #sonemos #hugoduval #tango', likes: [] },
-                { id: 4, user: users[1], timestamp: newMoment('11:55AM 11/22/16'), post: 'La soledad, que me envuelve el corazón, va encendiendo en mi alma, el fuego de tu amor lejano. En las brumas de tu olvido, viaja mi ilusión, gritando tu nombre en vano. #caricias #hugoduval #tango', likes: [] },
-                { id: 5, user: users[1], timestamp: newMoment('12:00PM 11/22/16'), post: 'Todo es amor, la brisa y tú, jugando en el rumor, y el ruiseñor, cantando en una flor, buscando amor, amor. #todoesamor #hugoduval #tango', likes: [] },
-                { id: 6, user: users[0], timestamp: newMoment('12:15PM 11/22/16'), post: '...and lunch is over, so back to class.', likes: [users[0], users[4]] },
-                { id: 7, user: users[2], timestamp: newMoment('2:00PM 11/22/16'), post: 'No me hablas tesoro mio, No me hablas ni me has mirado, Fueron tres años mi vida, Tres años muy lejos de tu corazon. #fuerontresanos #tango', likes: [users[3]] },
-                { id: 8, user: users[0], timestamp: newMoment('4:30PM 11/22/16'), post: 'Class just ended.', likes: [users[0], users[4]] },
-                { id: 9, user: users[0], timestamp: newMoment('5:00PM 11/22/16'), post: 'I\'m going home for the day!', likes: [users[0], users[4]] },
-                { id: 10, user: users[3], timestamp: moment(), post: 'Sacále punta a esta milonga, que ya empezó. Seguí esos fueyes que rezongan, del corazón. Y las pebetas que han venido, del Club Fulgor. El tango requiebra la vida, Y en sus notas desparrama, su amor. #sacalepunta #milonga', likes: [] },
-                { id: 11, user: users[3], timestamp: moment(), post: '¡Carnaval de mi barrio!, donde todo es amor, cascabeles de risa, matizando el dolor, ¡carnaval de mi barrio!, pedacito de sol, con nostalgias de luna, y canción de farol. #carnavaldemibarrio #tango', likes: [] },
-                { id: 12, user: users[5], timestamp: moment(), post: 'Ahora no me conocés… ¡me borro tu ingratitud!… Aunque dejés mi alma trunca, no podrás olvidar nunca, lo de nuestra juventud… #ahoranomeconoces #angelvargas #tango', likes: [users[3]] },
-                { id: 13, user: users[5], timestamp: moment(), post:  'Mañanita arrabalera, Sin taitas por las veredas, Ni minas en el balcón, Tus faroles apagados. #adiosarrabal #angelvargas #tango', likes: [] },
-                { id: 14, user: users[1], timestamp: moment(), post: 'Ya sé que me has olvidado, ya sé que te fuiste lejos. Ya sé que con mis consejos, no te voy a enderezar. #campoafuera #milonga', likes: [] } ];
-
-var interactions = [ { id: 0, user: users[0], activity: 'like', post: updates[6] },
-                     { id: 1, user: users[0], activity: 'like', post: updates[8] },
-                     { id: 2, user: users[0], activity: 'like', post: updates[9] },
-                     { id: 3, user: users[4], activity: 'like', post: updates[1] },
-                     { id: 4, user: users[4], activity: 'like', post: updates[2] },
-                     { id: 5, user: users[4], activity: 'like', post: updates[6] },
-                     { id: 6, user: users[4], activity: 'like', post: updates[8] },
-                     { id: 7, user: users[4], activity: 'like', post: updates[9] },
-                     { id: 8, user: users[1], activity: 'follow', followed: users[0] },
-                     { id: 9, user: users[2], activity: 'follow', followed: users[0] },
-                     { id: 10, user: users[3], activity: 'follow', followed: users[0] },
-                     { id: 11, user: users[4], activity: 'follow', followed: users[0] },
-                     { id: 12, user: users[5], activity: 'follow', followed: users[0] },
-                     { id: 13, user: users[6], activity: 'follow', followed: users[0] },
-                     { id: 14, user: users[7], activity: 'follow', followed: users[0] },
-                     { id: 15, user: users[0], activity: 'follow', followed: users[3] },
-                     { id: 16, user: users[0], activity: 'follow', followed: users[5] },
-                     { id: 17, user: users[0], activity: 'follow', followed: users[1] },
-                     { id: 18, user: users[3], activity: 'like', post: updates[12] },
-                     { id: 19, user: users[3], activity: 'like', post: updates[7] } ]; */
-
 var hashtags = { adiosarrabal: [updates[13]],
              ahoranomeconoces: [updates[12]],
                   angelvargas: [updates[12], updates[13]],
@@ -290,42 +158,6 @@ let interactionsDisplayed = 10;
 const left = document.getElementById('left');
 const center = document.getElementById('center');
 const right = document.getElementById('right');
-
-/*
-// loading data, for testing purposes
-loadData(); // function call!!!
-function loadData() {
-  // Going through updates and replacing userId key with a user key that holds a user object.
-  // And likes with references to users instead of their ids
-  updates.forEach( update => {
-    update.user = users[update.userId];
-    delete update.userId;
-    update.likes = update.likes.map( id => users[id] );
-  });
-  // Going through each user and replacing interactions array with array of references to the interactions instead of ids
-  // Going through each user and replacing likes array with array of references to the actual updates
-  // Same with following and followers.
-  users.forEach( user => {
-    user.interactions = user.interactions.map( id => interactions[id] );
-    user.likes = user.likes.map( id => updates[id] );
-    user.following = user.following.map( id => users[id] );
-    user.followers = user.followers.map( id => users[id] );
-  });
-  // Going through interactions array for replacing userId with references to the user
-  // going through interactions and replacing post with actual post or followed with user references
-  interactions.forEach( interaction => {
-    interaction.user = users[interaction.userId];
-    delete interaction.userId;
-    if(interaction.hasOwnProperty('post'))
-      interaction.post = updates[interaction.post];
-    else
-      interaction.followed = users[interaction.followed];
-  });
-  // Make hashtags refer to the actual posts
-  for (const hashtag in hashtags) {
-    hashtags[hashtag] = hashtags[hashtag].map( id => updates[id]);
-  }
-} */
 
 // Takes a formatted time and returns a new Moment obj.
 function newMoment(timestamp) {
