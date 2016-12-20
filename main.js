@@ -95,18 +95,18 @@ const interactions = [new LikeInteraction(0, users[0], 'like', updates[6]),
                       new LikeInteraction(19, users[3], 'like', updates[7])];
 
 const hashtags = { adiosarrabal: [updates[13]],
-             ahoranomeconoces: [updates[12]],
-                  angelvargas: [updates[12], updates[13]],
-                  campoafuera: [updates[14]],
-                     caricias: [updates[4]],
-           carnavaldemibarrio: [updates[11]],
-               fuerontresanos: [updates[7]],
-             historiadeunamor: [updates[0]],
-                    hugoduval: [updates[3], updates[4], updates[5]],
-                      milonga: [updates[10], updates[14]],
-                  sacalepunta: [updates[10]],
-                      sonemos: [updates[3]],
-                        tango: [updates[0], updates[3], updates[4], updates[5], updates[7], updates[11], updates[12], updates[13]],
+                   ahoranomeconoces: [updates[12]],
+                   angelvargas: [updates[12], updates[13]],
+                   campoafuera: [updates[14]],
+                   caricias: [updates[4]],
+                   carnavaldemibarrio: [updates[11]],
+                   fuerontresanos: [updates[7]],
+                   historiadeunamor: [updates[0]],
+                   hugoduval: [updates[3], updates[4], updates[5]],
+                   milonga: [updates[10], updates[14]],
+                   sacalepunta: [updates[10]],
+                   sonemos: [updates[3]],
+                   tango: [updates[0], updates[3], updates[4], updates[5], updates[7], updates[11], updates[12], updates[13]],
                    todoesamor: [updates[5]] };
 
 let primaryUser;
@@ -203,9 +203,7 @@ function follow(user) {
     suggestions[sugIndex].classList.toggle('lnr-plus-circle');
     primaryUser.following.splice(primaryUser.following.indexOf(user), 1);
     user.followers.splice(user.followers.indexOf(primaryUser), 1);
-    const interactionToRemove = interactions.find( ({action, user: theUser, followed}) =>
-      (action === 'follow' && followed === user && theUser == primaryUser)
-    );
+    const interactionToRemove = interactions.find( ({action, user: theUser, followed}) => (action === 'follow' && followed === user && theUser == primaryUser) );
     interactions.splice(interactions.indexOf(interactionToRemove), 1);
     primaryUser.interactions.splice(primaryUser.interactions.indexOf(interactionToRemove), 1);
   } else {
@@ -244,7 +242,7 @@ function modifyDocument(action, ids) {
   const doAction = (action === 'remove') ? remove : empty;
   if (!(ids instanceof Array))
     ids = [ids];
-  ids.forEach(function (id) {
+  ids.forEach( id => {
     const element = document.getElementById(id);
     if (!element) return;
     doAction(element);
@@ -297,11 +295,8 @@ function goHome() {
 
 // Returns #updates element containing all updates for the users the primary user is following
 function allUpdates() {
-  const updatesToDisplay = [];
-  updates.forEach( update => {
-    if(primaryUser.following.includes(update.user))
-      updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(update)));
-  });
+  const updatesToDisplay = updates.filter( update => primaryUser.following.includes(update.user)
+  ).map( update => createElement('div', { class: 'update' }, getUpdateElements(update)) );
   if (updatesToDisplay.length)
     return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
   updatesToDisplay.push(createElement('div', { class: 'update' }, 'No updates to display. Follow other users to view their updates in your newsfeed.'));
@@ -321,10 +316,10 @@ function userInfo(user) {
   profilePic.style.backgroundImage = 'url(' + user.profilePic + ')'
   if (!currentlyViewing) return userInfo;
   if (user === primaryUser) {
-    userInfo.appendChild(createElement('button', { id: 'edit-profile' }, 'Edit Profile', ['click', function() { editProfile() }]));
+    userInfo.appendChild(createElement('button', { id: 'edit-profile' }, 'Edit Profile', ['click', editProfile]));
     return userInfo;
   }
-  userInfo.appendChild(createElement('button', { id: 'follow' }, primaryUser.following.includes(user.id) ? 'Following' : 'Follow', ['click', function() { follow(user) }]));
+  userInfo.appendChild(createElement('button', { id: 'follow' }, primaryUser.following.includes(user.id) ? 'Following' : 'Follow', ['click', () => follow(user) ]));
   return userInfo;
 }
 
@@ -383,7 +378,7 @@ function checkUsername(value) {
     cross.style.visibility = 'visible';
     return;
   }
-  if (users.some(function(user) { return user.username === value })) {
+  if (users.some( user => user.username === value )) {
     message.textContent = '*this username is taken*';
     cross.style.visibility = 'visible';
     return;
@@ -417,7 +412,7 @@ function getInteractions(user, userInteractions, extra) {
   if (user)
     interactionsArray = userInteractions.slice();
   else
-    interactionsArray = userInteractions.filter( ({user}) => (user === primaryUser || primaryUser.following.indexOf(user) > -1) );
+    interactionsArray = userInteractions.filter( ({user}) => (user === primaryUser || primaryUser.following.includes(user)) );
   const container = createElement('div', { id: 'interactions', class: 'shadow' }, createElement('h3', {  }, 'Interactions'));
   let itemsAdded = 0;
   interactionsArray.reverse()
@@ -486,7 +481,7 @@ function stats(user) {
              createElement('span', { id: 'followers', class: 'stat' },
                 [createElement('p', { class: 'label' }, 'followers'),
                  createElement('p', { class: 'count' }, user.followers.length)])],
-             ['click', function(e) { displayCenterContent(e, user) }]);
+             ['click', e => { displayCenterContent(e, user) }]);
 }
 
 // Refreshes #stats element on profile. Called when a new user is followed/unfollowed, new post, etc...
@@ -496,26 +491,24 @@ function refreshStats() {
 }
 
 // Modifies content in center container to display posts, following, or followers. Called when stats is clicked.
-function displayCenterContent(event, user) {
+function displayCenterContent({target: element}, user) {
   modifyDocument('remove', ['hashtag', 'new-update', 'updates', 'list'])
   if (viewing) document.getElementById(viewing).style.borderColor = null;
-  event.target.style.borderColor = '#81a9ca';
-  switch (event.target) {
-    case document.getElementById('posts'):
-      viewing = 'posts';
+  element.style.borderColor = '#81a9ca';
+  switch (element.id) {
+    case 'posts':
       if (user === primaryUser)
         center.appendChild(updatePoster())
       center.appendChild(userUpdates(user));
       break;
-    case document.getElementById('following'):
-      viewing = 'following';
+    case 'following':
       center.appendChild(listOfUsers(user.following));
       break;
-    case document.getElementById('followers'):
-      viewing = 'followers';
+    case 'followers':
       center.appendChild(listOfUsers(user.followers));
       break;
   }
+  viewing = element.id;
 }
 
 // Returns #new-update element for posting a new update.
@@ -573,11 +566,8 @@ function addHashtags(update) {
 
 // Returns an #updates element containing all updates for any one given user.
 function userUpdates(user) {
-  const updatesToDisplay = []
-  updates.forEach( update => {
-    if (update.user === user)
-      updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(update)));
-  });
+  const updatesToDisplay = updates.filter( update => update.user === user
+  ).map( update => createElement('div', { class: 'update' }, getUpdateElements(update)) );
   if (updatesToDisplay.length)
     return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
   if (currentlyViewing === primaryUser)
@@ -623,9 +613,9 @@ function addLinks(post) {
     }
     let eventListener = null;
     if (char === '#')
-      eventListener = ['click', function(e) { viewHashtag(e.target.lastChild.textContent) }];
+      eventListener = ['click', ({target}) => { viewHashtag(target.lastChild.textContent) }];
     else
-      eventListener = ['click', function(e) { displayProfile(users.find( ({username}) => (e.target.lastChild.textContent === username) )) }];
+      eventListener = ['click', ({target}) => { displayProfile(users.find( ({username}) => (target.lastChild.textContent === username) )) }];
     components.push(createElement('a', { class: 'hashtag', href: '#' }, [char, createElement('span', {  }, hashtag)], eventListener));
     post = post.substring(pointer);
   }
@@ -640,9 +630,7 @@ function likePost(updateElement, update) {
     primaryUser.likes.splice(primaryUser.likes.indexOf(update), 1);
     update.likes.splice(update.likes.indexOf(primaryUser.id), 1);
     updateElement.className = 'like';
-    const interactionToRemove = interactions.find( ({action, post, user}) =>
-      (action === 'like' && post === update && user == primaryUser)
-    );
+    const interactionToRemove = interactions.find( ({action, post, user}) => (action === 'like' && post === update && user == primaryUser) );
     interactions.splice(interactions.indexOf(interactionToRemove), 1);
     primaryUser.interactions.splice(primaryUser.interactions.indexOf(interactionToRemove), 1);
   } else {
@@ -717,7 +705,7 @@ function trending() {
     sorted.splice(pointer, 0, hashtag);
   }
   for (let i = 0; i < 5; i++)
-    trending.appendChild(createElement('a', { class: 'hashtag', href: '#' }, ['#', createElement('span', {  }, sorted[i])], ['click', function(e) { viewHashtag(e.target.lastChild.textContent) }]));
+    trending.appendChild(createElement('a', { class: 'hashtag', href: '#' }, ['#', createElement('span', {  }, sorted[i])], ['click', ({target}) => viewHashtag(target.lastChild.textContent) ]));
   return trending;
 }
 
@@ -733,22 +721,21 @@ function viewHashtag(hashtag) {
 
 // Returns #updates element containing all updates containg the given hashtag
 function hashtagUpdates(hashtag) {
-  const updatesToDisplay = [];
-  hashtags[hashtag].forEach(update => { updatesToDisplay.unshift(createElement('div', { class: 'update' }, getUpdateElements(update))) });
+  const updatesToDisplay = hashtags[hashtag].map( update => createElement('div', { class: 'update' }, getUpdateElements(update)) );
   return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
 }
 
 // 'Who To Follow' section: Returns div element containing a list of all users besides the primary user.
 function suggestions() {
   const suggestions = createElement('div', { id: 'suggestions', class: 'shadow' }, [createElement('h3', {  }, 'Who to follow')]);
-  users.forEach( function(user) {
-    if (user === primaryUser) return;
+  users.filter( user => user !== primaryUser
+  ).forEach( user => {
     const icon = primaryUser.following.includes(user) ? 'lnr-checkmark-circle' : 'lnr-plus-circle';
     suggestions.appendChild(createElement('div', { class: 'user' },
                                [createElement('div', { class: 'photo', style: 'background-image:url(\'' + user.profilePic + '\')' }, null, ['click', function() { displayProfile(user) }]),
-                                createElement('h4', { class: 'name' }, user.displayName, ['click', function() { displayProfile(user) }]),
-                                createElement('p', { class: 'username' }, '@' + user.username, ['click', function() { displayProfile(user) }]),
-                                createElement('span', { class: 'plus lnr ' + icon }, null, ['click', function() { follow(user) }])]));
+                                createElement('h4', { class: 'name' }, user.displayName, ['click', () => displayProfile(user) ]),
+                                createElement('p', { class: 'username' }, '@' + user.username, ['click', () => displayProfile(user) ]),
+                                createElement('span', { class: 'plus lnr ' + icon }, null, ['click', () => follow(user) ])]));
   });
   return suggestions;
 }
@@ -765,9 +752,9 @@ let focusResult = -1;
 let lastFocused = null;
 
 // User can navigate through search results using arrow keys, and search results dynamically update as user types
-function keyboardNav(e) {
+function keyboardNav({keyCode}) {
   const results = document.getElementsByClassName('result');
-  switch (e.keyCode) {
+  switch (keyCode) {
     case 13: //enter key
       if (focusResult === -1) checkSearchInput();
       else results[focusResult].click();
@@ -827,7 +814,7 @@ function getSearchResults(key) {
       primaryUserAdded = true;
       return;
     }
-    if (primaryUserAdded && primaryUser.following.indexOf(user) > -1) {
+    if (primaryUserAdded && primaryUser.following.includes(user)) {
       results.splice(1, 0, addResult(user))
       return;
     }
@@ -846,12 +833,12 @@ function addResult(user) {
             [createElement('div', { class: 'photo', style: 'background-image:url(\'' + user.profilePic + '\')' }),
              createElement('h4', { class: 'name' }, user.displayName),
              createElement('p', { class: 'username' }, '@' + user.username)],
-          ['click', function() { displayProfile(user) }]);
+          ['click', () => displayProfile(user) ]);
 }
 
 // Hides the #results element from being visible in the search bar.
 function hideResults(event) {
-  if (event && (event.target === document.getElementById('results') || event.target === document.getElementById('search-input'))) return;
+  if (event && (event.target.id === 'results' || event.target.id === 'search-input')) return;
   document.getElementById('results').style.visibility = 'hidden';
   document.getElementById('search-input').style.borderBottomLeftRadius = '15px';
   document.getElementById('search-button').style.borderBottomRightRadius = '15px';
@@ -859,14 +846,14 @@ function hideResults(event) {
 
 // Adds event listeners to the header (navigation buttons and the search bar)
 document.getElementById('login-link').addEventListener('click', login);
-document.getElementById('password-input').addEventListener('keyup', event => { event.keyCode === 13 ? login() : null } );
+document.getElementById('password-input').addEventListener('keyup', ({keyCode}) => { keyCode === 13 ? login() : null } );
 document.getElementById('home-button').addEventListener('click', goHome);
 document.getElementById('search-button').addEventListener('click', checkSearchInput);
-document.getElementById('search-input').addEventListener('keyup', function(e) { keyboardNav(e) });
+document.getElementById('search-input').addEventListener('keyup', e => { keyboardNav(e) });
 document.getElementById('search-input').addEventListener('focus', displayResults);
-document.getElementById('profile-button').addEventListener('click', function() { displayProfile(primaryUser) });
+document.getElementById('profile-button').addEventListener('click', () => { displayProfile(primaryUser) });
 document.getElementById('logout-button').addEventListener('click', logout);
-document.getElementById('body').addEventListener('click', function(e) { hideResults(e) });
+document.getElementById('body').addEventListener('click', e => { hideResults(e) });
 
 // Loads predetermined interactions for demonstration purposes.
 loadDemoInteractions()
