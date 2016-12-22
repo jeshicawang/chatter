@@ -296,7 +296,8 @@ function goHome() {
 // Returns #updates element containing all updates for the users the primary user is following
 function allUpdates() {
   const updatesToDisplay = updates.filter( update => primaryUser.following.includes(update.user)
-  ).map( update => createElement('div', { class: 'update' }, getUpdateElements(update)) );
+  ).map( update => createElement('div', { class: 'update' }, getUpdateElements(update))
+  ).reverse();
   if (updatesToDisplay.length)
     return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
   updatesToDisplay.push(createElement('div', { class: 'update' }, 'No updates to display. Follow other users to view their updates in your newsfeed.'));
@@ -567,7 +568,8 @@ function addHashtags(update) {
 // Returns an #updates element containing all updates for any one given user.
 function userUpdates(user) {
   const updatesToDisplay = updates.filter( update => update.user === user
-  ).map( update => createElement('div', { class: 'update' }, getUpdateElements(update)) );
+  ).map( update => createElement('div', { class: 'update' }, getUpdateElements(update))
+  ).reverse();
   if (updatesToDisplay.length)
     return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
   if (currentlyViewing === primaryUser)
@@ -721,7 +723,12 @@ function viewHashtag(hashtag) {
 
 // Returns #updates element containing all updates containg the given hashtag
 function hashtagUpdates(hashtag) {
-  const updatesToDisplay = hashtags[hashtag].map( update => createElement('div', { class: 'update' }, getUpdateElements(update)) );
+  let updatesToDisplay = [];
+  if (hashtags[hashtag])
+    updatesToDisplay = hashtags[hashtag].map( update => createElement('div', { class: 'update' }, getUpdateElements(update)) 
+  ).reverse();
+  if (!updatesToDisplay.length)
+    updatesToDisplay.push(createElement('div', { class: 'update' }, 'No hashtags yet. Post an update with #' + hashtag + ' and it will show up here.'));
   return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
 }
 
@@ -742,8 +749,14 @@ function suggestions() {
 
 // Attemps to display the profile of whatever user's username is typed into the search bar.
 function checkSearchInput() {
-  const input = document.getElementById('search-input').value;
+  let input = document.getElementById('search-input').value;
   if (!input.trim()) return;
+  if (input.charAt(0) === '@')
+    input = input.substring(1);
+  else if (input.charAt(0) === '#') {
+    input = input.substring(1);
+    viewHashtag(input);
+  }
   displayProfile(users.find( ({username}) => (username === input) ));
   document.getElementById('search-input').value = '';
 }
@@ -780,10 +793,10 @@ function keyboardNav({keyCode}) {
   }
 }
 
-// Search results are displayed directly underneathe search bar
+// Search results are displayed directly underneath search bar
 function displayResults() {
   focusResult = -1;
-  const input = document.getElementById('search-input').value.toLowerCase();
+  let input = document.getElementById('search-input').value.toLowerCase();
   const resultsContainer = document.getElementById('results');
   resultsContainer.style.visibility = 'hidden';
   while (resultsContainer.firstChild)
@@ -791,6 +804,8 @@ function displayResults() {
   document.getElementById('search-input').style.borderBottomLeftRadius = '15px';
   document.getElementById('search-button').style.borderBottomRightRadius = '15px';
   if (!input.trim()) return;
+  if (input.charAt(0) === '@')
+    input = input.substring(1);
   const results = getSearchResults(input);
   if (!results.length) return;
   document.getElementById('search-input').style.borderBottomLeftRadius = '0';
