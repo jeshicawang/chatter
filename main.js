@@ -296,7 +296,8 @@ function goHome() {
 // Returns #updates element containing all updates for the users the primary user is following
 function allUpdates() {
   const updatesToDisplay = updates.filter( update => primaryUser.following.includes(update.user)
-  ).map( update => createElement('div', { class: 'update' }, getUpdateElements(update)) );
+  ).map( update => createElement('div', { class: 'update' }, getUpdateElements(update))
+  ).reverse();
   if (updatesToDisplay.length)
     return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
   updatesToDisplay.push(createElement('div', { class: 'update' }, 'No updates to display. Follow other users to view their updates in your newsfeed.'));
@@ -567,7 +568,8 @@ function addHashtags(update) {
 // Returns an #updates element containing all updates for any one given user.
 function userUpdates(user) {
   const updatesToDisplay = updates.filter( update => update.user === user
-  ).map( update => createElement('div', { class: 'update' }, getUpdateElements(update)) );
+  ).map( update => createElement('div', { class: 'update' }, getUpdateElements(update))
+  ).reverse();
   if (updatesToDisplay.length)
     return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
   if (currentlyViewing === primaryUser)
@@ -723,7 +725,8 @@ function viewHashtag(hashtag) {
 function hashtagUpdates(hashtag) {
   let updatesToDisplay = [];
   if (hashtags[hashtag])
-    updatesToDisplay = hashtags[hashtag].map( update => createElement('div', { class: 'update' }, getUpdateElements(update)) );
+    updatesToDisplay = hashtags[hashtag].map( update => createElement('div', { class: 'update' }, getUpdateElements(update)) 
+  ).reverse();
   if (!updatesToDisplay.length)
     updatesToDisplay.push(createElement('div', { class: 'update' }, 'No hashtags yet. Post an update with #' + hashtag + ' and it will show up here.'));
   return createElement('div', { id: 'updates', class: 'shadow' }, updatesToDisplay);
