@@ -260,6 +260,8 @@ function login() {
   document.getElementById('username-input').value = '';
   document.getElementById('password-input').value = '';
   primaryUser = user;
+  localStorage.setItem('logged-in', 'true');
+  localStorage.setItem('user-id', primaryUser.id);
   right.appendChild(trending());
   right.appendChild(suggestions());
   goHome();
@@ -271,6 +273,7 @@ function logout() {
   toggleVisibility(['header', 'content', 'landing']);
   modifyDocument('empty', ['left', 'center', 'right']);
   primaryUser = null;
+  localStorage.setItem('logged-in', 'false');
 }
 
 // Takes an array of element ids and toggle's each id's visibility
@@ -725,7 +728,7 @@ function viewHashtag(hashtag) {
 function hashtagUpdates(hashtag) {
   let updatesToDisplay = [];
   if (hashtags[hashtag])
-    updatesToDisplay = hashtags[hashtag].map( update => createElement('div', { class: 'update' }, getUpdateElements(update)) 
+    updatesToDisplay = hashtags[hashtag].map( update => createElement('div', { class: 'update' }, getUpdateElements(update))
   ).reverse();
   if (!updatesToDisplay.length)
     updatesToDisplay.push(createElement('div', { class: 'update' }, 'No hashtags yet. Post an update with #' + hashtag + ' and it will show up here.'));
@@ -874,8 +877,10 @@ document.getElementById('body').addEventListener('click', e => { hideResults(e) 
 loadDemoInteractions()
 
 // Bypass login page. (for testing purposes)
-primaryUser = users[0];
-right.appendChild(trending());
-right.appendChild(suggestions());
-goHome();
-toggleVisibility(['header', 'content', 'landing']);
+if (localStorage.getItem('logged-in') === 'true') {
+  primaryUser = users[localStorage.getItem('user-id')];
+  right.appendChild(trending());
+  right.appendChild(suggestions());
+  goHome();
+  toggleVisibility(['header', 'content', 'landing']);
+}
