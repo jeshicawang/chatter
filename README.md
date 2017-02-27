@@ -13,3 +13,4 @@ A twitter clone. (Made with vanilla JavaScript, HTML, and CSS.)
 - Like posts
 - View hashtags
 - View activity feed
+- Edit user profile
